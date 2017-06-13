@@ -1,0 +1,53 @@
+# Remove any existing rules
+-D
+
+# Increase kernel buffer size
+-b 8192
+
+# Failure of auditd causes a kernel panic
+-f 2
+
+#2.6.2.4.5 Ensure auditd Collects Logon and Logout Events
+-w /var/log/faillog -p wa -k logins
+-w /var/log/lastlog -p wa -k logins
+
+## user, group, password databases
+-w /etc/group -p wa -k etcgroup
+-w /etc/passwd -p wa -k etcpasswd
+-w /etc/gshadow -k etcgroup
+-w /etc/shadow -k etcpasswd
+-w /etc/security/opasswd -k opasswd
+
+## Monitor usage of passwd
+-w /usr/bin/passwd -p x -k passwd_modification
+
+# Monitor for use of tools to change group identifiers
+-w /usr/sbin/groupadd -p x -k group_modification
+-w /usr/sbin/groupmod -p x -k group_modification
+-w /usr/sbin/addgroup -p x -k group_modification
+-w /usr/sbin/useradd -p x -k user_modification
+-w /usr/sbin/usermod -p x -k user_modification
+-w /usr/sbin/adduser -p x -k user_modification
+
+## Login configuration and information
+-w /etc/login.defs -p wa -k login
+-w /etc/securetty -p wa -k login
+-w /var/log/faillog -p wa -k login
+-w /var/log/lastlog -p wa -k login
+-w /var/log/tallylog -p wa -k login
+
+## Privileged stuff
+-w /etc/sudoers -p wa -k actions
+-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
+-a always,exit -F path=/usr/sbin/visudo -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
+
+## Package managers
+{% if ansible_distribution in ['RedHat', 'CentOS']%}
+-a always,exit -F path=/usr/bin/yum -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
+{% if ansible_distribution_major_version == '6' %}
+-a always,exit -F path=/bin/rpm -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
+{% elif ansible_distribution_major_version == '7' %}
+-a always,exit -F path=/usr/bin/rpm -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged
+{% endif %}
+{% endif %}
+

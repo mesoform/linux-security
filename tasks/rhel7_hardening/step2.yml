@@ -1,0 +1,151 @@
+---
+- name: "Root UID"
+  shell: "awk -F: '{if ( $1 !~  /^root$/ && $3 == 0 ) print $1}' /etc/passwd 2>/dev/null"
+  register: result_2_1_1
+  check_mode: "no"
+  changed_when: 0
+  failed_when: 0
+  ignore_errors: "yes"
+  tags:
+    - audit
+    - step2
+
+- name: "Remove martian root accounts"
+  user: name={{ item }} state=absent force=yes
+  with_items: "{{ result_2_1_1.stdout_lines }}"
+  when: result_2_1_1.stdout_lines
+  tags:
+    - patch
+    - step2
+
+- name: "Only 'root' and other approved accounts are allowed to be members of the group with gid 0"
+  command: /usr/sbin/lid -ng root
+  register: result_2_2_1
+  check_mode: "no"
+  changed_when: 0
+  failed_when: result_2_2_1.stdout != allowed_gid_zero_users
+  ignore_errors: "yes"
+  tags:
+    - audit
+    - step2
+
+- name: "Only 'root' and other approved accounts are allowed to be members of the group with gid 0 | Primary group collect"
+  shell: "awk -F: '{if ( $4 == 0 ) print $1}' /etc/passwd 2>/dev/null"
+  check_mode: "no"
+  changed_when: 0
+  register: result_2_2_1_primary
+  tags:
+    - patch
+    - step2
+
+- name: "Only 'root' and other approved accounts are allowed to be members of the group with gid 0 | Primary group perform"
+  user: name={{ item }} group=nobody
+  with_items: "{{ result_2_2_1_primary.stdout_lines }}"
+  when: item not in allowed_gid_zero_users_list
+  tags:
+    - patch
+    - step2
+
+- name: "Only allow root access to system console"
+  copy: src=securetty dest=/etc/securetty owner=root group=root mode=0600
+  tags:
+    - patch
+    - step2
+
+- name: "Find members of group wheel"
+  command: /usr/sbin/lid -ng wheel
+  register: result_2_4_1_wheel
+  failed_when: 0
+  changed_when: 0
+  ignore_errors: "yes"
+  tags:
+    - audit
+    - step2
+
+- name: "Disable SU access"
+  command: "/usr/sbin/lgroupmod -m {{ item }} wheel"
+  with_items: "{{ result_2_4_1_wheel.stdout_lines }}"
+  when: result_2_4_1_wheel.stdout_lines
+  tags:
+    - patch
+    - step2
+
+- name: "Does sshd_config exist"
+  stat: path="/etc/ssh/sshd_config"
+  register: result_2_4_1_sshd_config
+  tags:
+    - patch
+    - step2
+
+- name: "Disable SSH root login"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?PermitRootLogin"
+    line: "PermitRootLogin no"
+  tags:
+    - patch
+    - step2
+  when: result_2_4_1_sshd_config.stat.exists
+  notify: reload sshd
+
+- name: "Root home directory should be /root"
+  shell: "/bin/awk -F: '{if ($1 ~ /^root$/) print $6}' /etc/passwd"
+  register: result_2_5_1_root
+  failed_when: result_2_5_1_root.rc != 0
+  changed_when: 0
+  check_mode: "no"
+  ignore_errors: "yes"
+  tags:
+    - audit
+    - step2
+
+- name: "Root home directory must only be writable by root"
+  file: path="{{ item }}" owner="root" mode=0700
+  with_items: "{{ result_2_5_1_root.stdout }}"
+  tags:
+    - patch
+    - step2
+  when: result_2_5_1_root.stdout is defined and result_2_5_1_root.stdout
+
+- name: "Ensure no other user has the same home directory as root"
+  shell: "/bin/awk -F: '{if ($1 !~ /^root$/ && $6 == \"/root\") print $1}' /etc/passwd"
+  register: result_2_5_3_users_with_root_homedir
+  check_mode: "no"
+  changed_when: 0
+  failed_when: result_2_5_3_users_with_root_homedir.stdout_lines
+  ignore_errors: "yes"
+  tags:
+    - audit
+    - step2
+
+- name: "Ensure no other user has the same home directory as root"
+  user: name={{ item }} home=/home/{{ item }} createhome=yes
+  with_items: "{{ result_2_5_3_users_with_root_homedir.stdout_lines }}"
+  tags:
+    - patch
+    - step2
+
+- name: "The root search paths must be writable by root"
+  file: path="{{ item }}" owner="root" mode=0755
+  with_flattened:
+    - "{{ search_path_for_root }}"
+    - "{{ common_execution_search_path.stdout_lines }}"
+  tags:
+    - patch
+    - step2
+
+- name: "Search for files that are executable and writable by non root users"
+  shell: |
+         /bin/find "{{ item }}" -type f -executable  -a \( -perm /222 -a ! -uid 0  \)
+  register: result_2_6_1_search_path
+  failed_when: result_2_6_1_search_path.stdout
+  changed_when: 0
+  check_mode: "no"
+  ignore_errors: "yes"
+  with_flattened:
+    - "{{ search_path_for_root }}"
+    - "{{ common_execution_search_path.stdout_lines }}"
+  tags:
+    - patch
+    - step2
+    - skip_ansible_lint

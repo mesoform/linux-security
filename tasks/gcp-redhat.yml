@@ -1,0 +1,25 @@
+---
+- block:
+  - name: "install Stackdriver agent"
+    get_url:
+      url: https://repo.stackdriver.com/stack-install.sh
+      dest: /root/
+
+  - get_url:
+      url: https://dl.google.com/cloudagents/install-logging-agent.sh
+      dest: /root/
+
+  - shell: |
+      bash /root/stack-install.sh --write-gcm
+      bash /root/install-logging-agent.sh
+      rm /root/stack-install.sh
+      rm /root/install-logging-agent.sh
+
+  tags:
+    - gcp
+
+- name: "install Google Cloud SDK"
+  yum:
+    name: google-cloud-sdk
+  tags:
+    - gcp

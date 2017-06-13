@@ -1,0 +1,54 @@
+---
+- name: Set OS dependent variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+
+- name: Check ansible version
+  fail:
+      msg: You must use ansible 2.1 or greater
+  when: not ansible_version.full | version_compare('2.1', '>=')
+  tags:
+    - always
+
+- name: Fail if OS not supported
+  fail:
+    msg: "This OS is not supported by this role"
+  when:
+    - ansible_os_family != 'RedHat'
+    - ansible_os_family != 'Windows'
+  tags:
+    - always
+
+- include: redhat-packages.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: sysctl.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: services.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: minimise-access.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: windows.yml
+  when: ansible_os_family == 'Windows'
+
+#- include: auditd.yml
+#  when: ansible_os_family == 'RedHat'
+
+- include: motd.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: gcp-redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: rhel7_hardening.yml
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version | version_compare('7', '==')

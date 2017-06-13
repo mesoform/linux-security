@@ -1,0 +1,39 @@
+---
+
+- name: "User shells MUST NOT have the privileged escalation bit (setuid / setgid) set"
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - /bin/bash
+  tags:
+    - audit
+    - step2
+
+- name: "Configuration files used to set user-specific shell settings must be writable by root"
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: u=rwX,g=rX,o=rX 
+    recurse: yes
+  with_items:
+    - /etc/profile.d
+    - /etc/skel
+  tags:
+    - audit
+    - step2
+
+- name: "'setuid' or 'setgid' executables MUST only be modifiable by the file owner or 'root'"
+  file:
+    path: "{{ item }}"
+    owner: root
+    mode: "o-w"
+  with_items: "{{ common_suid_guid_programs.stdout_lines }}"
+  tags:
+    - fix
+    - step2
+  when: common_suid_guid_programs
+

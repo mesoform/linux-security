@@ -1,0 +1,6 @@
+---
+- name: apply standard access banner
+  become: true
+  template:
+    src: motd.j2
+    dest: /etc/motd

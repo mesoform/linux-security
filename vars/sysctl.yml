@@ -1,0 +1,32 @@
+sysctl_config:
+  # Disable IPv4 forwarding.
+  net.ipv4.ip_forward: 0
+
+  # Ignore ICMP redirect
+  net.ipv4.conf.all.send_redirects: 0
+
+  # Do not send ICMP redirects
+  net.ipv4.conf.all.accept_redirects: 0
+
+  # Syncookies is used to prevent SYN-flooding attacks.
+  net.ipv4.tcp_syncookies: 1
+
+  # Disable forwarding of source-routed packets
+  net.ipv4.conf.default.accept_redirects: 0
+  net.ipv4.conf.all.secure_redirects: 0
+  net.ipv4.conf.all.accept_source_route: 0
+
+  # Disable forwarding of directed broadcasts
+  net.ipv4.icmp_echo_ignore_broadcasts: 1
+
+  # Disable IPv6
+  net.ipv6.conf.all.disable_ipv6: 1
+
+  # Unestablished connections queue
+  net.ipv4.tcp_max_syn_backlog: 1024
+
+  # Set ARP Cache timeout
+  net.ipv4.neigh.default.base_reachable_time_ms: 60000
+
+  # Reduce keepalive interval to one second
+  net.ipv4.tcp_keepalive_intvl: 1

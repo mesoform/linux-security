@@ -1,0 +1,7 @@
+---
+- hosts: test_rhel_instances
+  gather_facts: yes
+  become: true
+
+  roles:
+    - ansible-os-security

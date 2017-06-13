@@ -1,0 +1,42 @@
+---
+#- name: "prevent auto-mounting of detachable storage"
+  #Consider USB Guard if we consider this needed on Cloud VM - https://www.kernel.org/doc/Documentation/usb/authorization.txt
+  #failed_when: 0
+  #changed_when: 0
+  #ignore_errors: yes
+#  tags:
+#    - audit
+#    - step1
+
+#- name: "prevent auto-mounting of detachable storage"
+  #lineinfile:
+  #  dest: XXXXXXXXXX
+  #  regexp: XXXXXXXXXX
+  #  line: XXXXXXXXXX
+  #register: user_mount_list
+#  tags:
+#    - audit
+#    - step1
+
+#- name: "prevent auto-mounting of detachable storage"
+  #shell: "for user in $(awk -F: '!/root/ {print $1}' /etc/passwd); do passwd -S $user | awk '/Password (set|locked)/ { if ($5 > 90 ) print $1 }' ;done"
+  #register: user_password_expiration_days
+  #failed_when: 0
+  #changed_when: 0
+  #ignore_errors: yes
+#  tags:
+#    - patch
+#    - step1
+
+
+#- name: "prevent auto-mounting of detachable storage"
+  #lineinfile:
+  #  dest: XXXXXXXXXX
+  #  regexp: XXXXXXXXXX
+  #  line: XXXXXXXXXX
+#  tags:
+#    - patch
+#    - step1
+#  when:
+#    - user_mount_list is defined
+#    - user_mount_list

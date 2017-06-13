@@ -1,0 +1,129 @@
+---
+- name: "Drop malformed packets"
+  iptables_raw:
+    state: present
+    name: drop_malformed_packets
+    rules: |
+      -A INPUT -p tcp -m tcp --tcp-flags ALL NONE  -j DROP
+      -A INPUT -p tcp -m tcp --tcp-flags ALL ALL  -j DROP
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure suspicious packets are logged"
+  sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  with_items:
+    - { name: net.ipv4.conf.all.log_martians, value: 1 }
+    - { name: net.ipv4.conf.default.log_martians, value: 1 }
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure broadcast ICMP requests are ignored"
+  sysctl:
+    name: net.ipv4.icmp_echo_ignore_broadcasts
+    value: 1
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  tags:
+    - fix
+    - step5
+
+- name: "Drop ICMP Timestamp packets"
+  iptables_raw:
+    state: present
+    name: drop_icmp_timestamp
+    rules: |
+      -A INPUT -p ICMP --icmp-type timestamp-request -j DROP
+      -A INPUT -p ICMP --icmp-type timestamp-reply -j DROP
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure packet redirect sending is disabled"
+  sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  with_items:
+    - { name: net.ipv4.conf.all.send_redirects, value: 0 }
+    - { name: net.ipv4.conf.default.send_redirects, value: 0 }
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure packet redirect receiving is disabled"
+  sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  with_items:
+    - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
+    - { name: net.ipv4.conf.default.accept_redirects, value: 0 }
+    - { name: net.ipv4.conf.all.secure_redirects, value: 0 }
+    - { name: net.ipv4.conf.default.secure_redirects, value: 0 }
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure IP forwarding is disabled"
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 0
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure source routed packets are not accepted"
+  sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  with_items:
+    - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
+    - { name: net.ipv4.conf.default.accept_source_route, value: 0 }
+  tags:
+    - fix
+    - step5
+
+- name: "Ensure TCP SYN Cookies is enabled"
+  sysctl:
+    name: net.ipv4.tcp_syncookies
+    value: 1
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  tags:
+    - fix
+    - step5
+
+- name: "System uses random sequence numbers"
+  sysctl:
+    name: net.ipv4.tcp_syncookies
+    value: 1
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  tags:
+    - fix
+    - step5
+

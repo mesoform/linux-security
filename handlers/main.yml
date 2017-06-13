@@ -1,0 +1,37 @@
+---
+# handlers file for rhel7 hardening
+
+- name: "CIS 5.2.18 Make auditd immutable"
+  blockinfile:
+    dest: /etc/audit/rules.d/audit.rules
+    marker: "# {mark} ANSIBLE MANAGED - immutable"
+    insertafter: EOF
+    block: |
+      -e 2
+  listen: reload auditd
+  tags:
+    - fix
+    - section5
+
+- name: "Load audit rules"
+  command: /usr/sbin/augenrules --load
+  listen: reload auditd
+
+- name: "Run grub2-mkconfig"
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+
+- block:
+  - name: "reload sshd config"
+    command: systemctl status sshd
+    ignore_errors: yes
+    changed_when: false
+    failed_when: 0
+    register: sshd_service_status
+    listen: reload sshd
+
+  - service:
+      name: sshd
+      state: reloaded
+    become: true
+    when: sshd_service_status.rc == 0
+    listen: reload sshd

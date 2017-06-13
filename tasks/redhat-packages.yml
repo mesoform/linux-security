@@ -1,0 +1,35 @@
+---
+- name: Install packages (RedHat)
+  yum: pkg='{{item}}'
+  with_items:
+    - bind-utils
+    - ethtool
+    - iproute
+    - lsof
+    - procps
+    - sysstat
+    - tcpdump
+    - iptables-services
+    - audit
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Remove packages (RedHat)
+  yum: name='{{item}}' state=removed
+  become: true
+  with_items:
+    - tftp
+    - tftp-server
+    - talk
+    - talk-server
+    - ypbind
+    - ypserv
+    - xinetd
+    - inetd
+    - telnet-server
+    - rsh
+    - rsh-server
+    - autofs
+    - firewalld
+  when: ansible_os_family == 'RedHat'
+

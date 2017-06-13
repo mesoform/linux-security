@@ -1,0 +1,23 @@
+---
+
+- name: install audit daemon package for rhel system
+  become: true
+  yum:
+    name: audit
+    state: present
+
+- name: deploy auditd.conf
+  become: true
+  template:
+      src: auditd.conf.j2
+      dest: /etc/audit/auditd.conf
+      backup: yes
+  notify: reload auditd
+
+- name: deploy audit.rules
+  become: true
+  template:
+      src: audit.rules.j2
+      dest: /etc/audit/audit.rules
+      backup: yes
+  notify: reload auditd

@@ -1,0 +1,103 @@
+---
+# 3 Network Configuration
+
+- name: "CIS 3.2.1 Ensure source routed packets are not accepted"
+  lineinfile:
+    dest: "/etc/init.d/functions"
+    regexp: '^umask'
+    line: 'umask 027'
+    backrefs: no
+  tags:
+    - patch
+    - cis-section3
+
+- name: "CIS 3.2.6 Ensure bogus ICMP responses are ignored"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  with_items:
+      - { name: net.ipv4.icmp_ignore_bogus_error_responses, value: 1 }
+  tags:
+      - fix
+      - cis-section3
+
+- name: "CIS 3.3.1 Ensure IPv6 router advertisements are not accepted"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  with_items:
+      - { name: net.ipv6.conf.all.accept_ra, value: 0 }
+      - { name: net.ipv6.conf.default.accept_ra, value: 0 }
+  tags:
+      - fix
+      - cis-section3
+
+- name: "CIS 3.3.2 Ensure IPv6 redirects are not accepted"
+  sysctl:
+      name: '{{ item.name }}'
+      value: '{{ item.value }}'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  with_items:
+      - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
+      - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
+  tags:
+      - fix
+      - cis-section3
+
+- name: "CIS 3.3.3 Ensure IPv6 is disabled"
+  sysctl:
+      name: 'net.ipv6.conf.all.disable_ipv6'
+      value: '1'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  tags:
+      - fix
+      - cis-section3
+
+- name: "CIS 3.3.3 Ensure IPv6 is disabled"
+  lineinfile:
+    dest: /etc/modprobe.d/CIS.conf
+    regexp: "^(#)?options ipv6 disable="
+    line: "options ipv6 disable=1"
+    create: yes
+  tags:
+      - fix
+      - cis-section3
+
+- name: "CIS 3.5.1 Ensure DCCP is disabled"
+  copy:
+      content: "install dccp /bin/true\n"
+      dest: /etc/modprobe.d/disable-dccp.conf
+      owner: root
+      group: root
+      mode: "0644"
+  tags:
+      - level1
+      - fix
+      - cis-section3
+
+- name: "CIS 3.5.2 Ensure SCTP is disabled"
+  copy:
+      content: "install sctp /bin/true\n"
+      dest: /etc/modprobe.d/disable-sctp.conf
+      owner: root
+      group: root
+      mode: "0644"
+  tags:
+      - level1
+      - fix
+      - cis-section3
+

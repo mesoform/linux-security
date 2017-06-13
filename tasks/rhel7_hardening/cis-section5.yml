@@ -1,0 +1,494 @@
+---
+# 5 Access, Authentication and Authorization
+- name: "CIS 5.2.2 Ensure SSH Protocol is set to 2"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?Protocol"
+    line: 'Protocol 2'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.3 Ensure SSH LogLevel is set to INFO"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?Loglevel"
+    line: 'LogLevel INFO'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.4 Ensure SSH X11 forwarding is disabled"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?X11Forwarding"
+    line: 'X11Forwarding no'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.5 Ensure SSH MaxAuthTries is set to 4 or less"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?MaxAuthTries"
+    line: 'MaxAuthTries 4'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.6 Ensure SSH IgnoreRhosts is enabled"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?IgnoreRhosts"
+    line: 'IgnoreRhosts yes'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.7 Ensure SSH HostbasedAuthentication is disabled "
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?HostbasedAuthentication"
+    line: 'HostbasedAuthentication no'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.9 Ensure SSH PermitEmptyPasswords is disabled"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?PermitEmptyPasswords"
+    line: 'PermitEmptyPasswords no'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS | MEDIUM | 6.2.10 | Fix | Do Not Allow SSH Environment Options"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?PermitUserEnvironment"
+    line: 'PermitUserEnvironment no'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.2.11 Ensure only approved ciphers are used "
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "(?i)^#?Ciphers"
+    line: 'Ciphers aes256-ctr,aes192-ctr,aes128-ctr'
+  notify: reload sshd
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- block:
+  - name: "CIS 5.2.13 Ensure SSH Idle Timeout Interval is configured"
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "(?i)^#?ClientAliveInterval"
+      line: 'ClientAliveInterval 300'
+    notify: reload sshd
+    tags:
+      - level
+      - patch
+      - cis-section5
+
+  - name: "CIS 5.2.13 Ensure SSH Idle Timeout Interval is configured"
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "(?i)^#?ClientAliveCountMax"
+      line: 'ClientAliveCountMax 0'
+    notify: reload sshd
+    tags:
+      - level
+      - patch
+      - cis-section5
+
+  - name: "CIS 5.2.16 Ensure SSH warning banner is configured"
+    copy:
+      src: security-notice
+      dest: /etc/issue
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload sshd
+    tags:
+      - level
+      - patch
+      - cis-section5
+
+  - name: "CIS 5.2.16 Ensure SSH warning banner is configured"
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "(?i)^#?Banner"
+      line: 'Banner /etc/issue'
+    notify: reload sshd
+    tags:
+      - level
+      - patch
+      - cis-section5
+
+- name: "CIS 5.3.1 Ensure password creation requirements are configured"
+  lineinfile:
+    dest: "/etc/security/pwquality.conf"
+    regexp: "^(.*)(pam_pwquality.so)(.*)retry=(.*)$"
+    line: '\1\2\3retry=3\4'
+    backrefs: yes
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.3.1 Ensure password creation requirements are configured"
+  lineinfile:
+    dest: "/etc/security/pwquality.conf"
+    regexp: '(?i)^#?\s?dcredit'
+    line: 'dcredit = -1'
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.3.1 Ensure password creation requirements are configured"
+  lineinfile:
+    dest: "/etc/security/pwquality.conf"
+    regexp: '(?i)^#?\s?minlen'
+    line: 'minlen = 14'
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.3.1 Ensure password creation requirements are configured"
+  lineinfile:
+    dest: "/etc/security/pwquality.conf"
+    regexp: '(?i)^#?\s?ocredit'
+    line: 'ocredit = -1'
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- name: "CIS 5.3.1 Ensure password creation requirements are configured"
+  lineinfile:
+    dest: "/etc/security/pwquality.conf"
+    regexp: '(?i)^#?\s?ucredit'
+    line: 'ucredit = -1'
+  tags:
+    - level
+    - patch
+    - cis-section5
+
+- block:
+  - name: "CIS 5.3.2 Ensure lockout for failed password attempts is configured"
+    lineinfile:
+      dest: "{{ item }}"
+      regexp: "^auth required pam_faillock.so .*$"
+      insertbefore: "^auth.*pam_unix.so"
+      line: "auth required pam_faillock.so preauth audit silent deny=5 unlock_time=900"
+    with_items:
+      - "/etc/pam.d/system-auth"
+      - "/etc/pam.d/password-auth"
+
+  - lineinfile:
+      dest: "{{ item }}"
+      regexp: '^auth +\[default=die\] +pam_faillock.so +authfail +audit +deny=5 +unlock_time=900$'
+      insertafter: "^auth.*pam_unix.so"
+      line: "auth [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900"
+    with_items:
+      - "/etc/pam.d/system-auth"
+      - "/etc/pam.d/password-auth"
+
+  - lineinfile:
+      dest: "{{ item }}"
+      regexp: "^account +required +pam_faillock.so$"
+      insertbefore: "^account.*pam_unix.so$"
+      line: "account required pam_faillock.so"
+    with_items:
+      - "/etc/pam.d/system-auth"
+      - "/etc/pam.d/password-auth"
+
+- name: "CIS 5.3.3 Ensure password reuse is limited"
+  lineinfile:
+    dest: "/etc/pam.d/system-auth"
+    regexp: '^(password +sufficient((?!remember=5).)*)$'
+    line: '\1 remember=5'
+    backrefs: yes
+
+- name: "CIS 5.4.1.1 Ensure password expiration is 90 days or less"
+  lineinfile:
+    dest: /etc/login.defs
+    regexp: (?i)^#?PASS_MAX_DAYS
+    line: PASS_MAX_DAYS 90
+  tags:
+    - patch
+    - cis-section5
+
+- name: "CIS 5.4.1.1 Ensure password expiration is 90 days or less"
+  shell: "for user in $(awk -F: '!/root/ {print $1}' /etc/passwd); do passwd -S $user | awk '/Password (set|locked)/ { if ($5 > 90 ) print $1 }' ;done"
+  register: user_password_expiration_days
+  failed_when: 0
+  changed_when: 0
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "CIS 5.4.1.1 Ensure password expiration is 90 days or less"
+  command: "chage -d {{ password_last_date.stdout }} -M 90 {{ item }}"
+  with_items: "{{ user_password_expiration_days.stdout_lines }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - user_password_expiration_days is defined
+    - user_password_expiration_days
+    
+- name: "CIS 5.4.4 Ensure default user umask is 027 or more restrictive (Set Daemon Umask)"
+  lineinfile:
+    dest: "/etc/init.d/functions"
+    regexp: '^umask'
+    line: 'umask 027'
+    backrefs: no
+  tags:
+    - patch
+    - cis-section5
+
+- name: "CIS 5.4.4 Ensure default user umask is 027 or more restrictive (Set Daemon Umask)"
+  lineinfile:
+    dest: "/etc/bashrc"
+    regexp: '^umask'
+    line: 'umask 027'
+    backrefs: no
+  tags:
+    - patch
+    - cis-section5
+
+- name: "CIS 5.4.4 Ensure default user umask is 027 or more restrictive (Set Daemon Umask)"
+  lineinfile:
+    dest: "/etc/profile"
+    regexp: '^umask'
+    line: 'umask 027'
+    backrefs: no
+  tags:
+    - patch
+    - cis-section5
+
+
+- name: "Set Password Change Minimum Number of Days"
+  lineinfile:
+    dest: /etc/login.defs
+    regexp: (?i)^#?PASS_MIN_DAYS
+    line: PASS_MIN_DAYS 7
+  tags:
+    - patch
+    - cis-section5
+
+- name: "Set Password Minimum Number of Days"
+  shell: "for user in $(awk -F: '!/root/ {print $1}' /etc/passwd); do passwd -S $user | awk '/Password (set|locked)/ { if ($4 != -1 && $4 < 7 ) print $1 }' ;done"
+  register: password_minimum_number_of_days
+  failed_when: 0
+  changed_when: 0
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "Set User Password Minimum Number of Days"
+  command: chage -m 7 "{{ item }}"
+  with_items: "{{ password_minimum_number_of_days.stdout_lines }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - password_minimum_number_of_days is defined
+    - password_minimum_number_of_days
+
+- name: "Set Password Warning Days"
+  lineinfile:
+    dest: /etc/login.defs
+    regexp: (?i)^#?PASS_WARN_AGE
+    line: PASS_WARN_AGE 7
+  tags:
+    - patch
+    - cis-section5
+
+- name: "Set User Password Warning Days"
+  shell: "for user in $(awk -F: '!/root/ {print $1}' /etc/passwd); do passwd -S $user | awk '/Password (set|locked)/ { if ($6 != -1 && $6 < 7 ) print $1 }' ;done"
+  register: user_password_warning_days
+  failed_when: 0
+  changed_when: 0
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "Set User Password Warning Days"
+  command: chage -W 7 "{{ item }}"
+  with_items: "{{ user_password_warning_days.stdout_lines }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - user_password_warning_days is defined
+    - user_password_warning_days
+
+- name: "Set Password Change Minimum Number of Days"
+  shell: |
+    for user in $(awk -F: '! /^(root|shutdown|sync)/ {if ($3 < {{ system_uid_max }} ) print $1}' /etc/passwd);do
+         passwd -S  $user | awk '{if ($2 !~ "L") print $1}'
+    done
+  register: system_account_password_lock
+  failed_when: 0
+  changed_when: 0
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "Set System Account Password Lock"
+  command: passwd -l "{{ item }}"
+  with_items: "{{ system_account_password_lock.stdout_lines }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - system_account_password_lock is defined
+    - system_account_password_lock
+
+- name: "UIDs must be globally unique"
+  shell: "/bin/awk -F: '{print $3}' /etc/passwd | uniq -d"
+  register: result_4_3_1
+  failed_when: result_4_3_1.stdout
+  changed_when: result_4_3_1.stdout
+  check_mode: no
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "GIDs must be globally unique"
+  shell: "/bin/awk -F: '{print $3}' /etc/group | uniq -d"
+  register: result_4_3_3
+  failed_when: result_4_3_3.stdout
+  changed_when: result_4_3_3.stdout
+  check_mode: no
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "Find Home Directories of Active Accounts"
+  shell: |
+       {% raw %}
+       declare -a users
+       count=0
+       users=$(awk -F: '!/(root|halt|sync|shutdown)/ {if ($7 != "/sbin/nologin" && $6 ~ /^\// ) print $1}' /etc/passwd)
+       num_users=$( echo $users | wc -w )
+       for user in ${users[@]}; do
+         let count+=1
+         home_directory=$(awk -F: "/$user:/ {print \$6}" /etc/passwd)
+         if [[ -n $home_directory ]] && [[ -d $home_directory ]]; then
+            if [[ $(stat -c %a $(awk -F: "/$user:/ {print \$6}" /etc/passwd)) -ne 700 ]]; then
+                if [[ $count -lt "${num_users}" ]]; then
+                    printf '{ "user": "%s", "home_directory": "%s" },' $user $home_directory
+                else
+                    printf '{ "user": "%s", "home_directory": "%s" }' $user $home_directory
+                fi
+            fi
+        fi
+        done
+        {% endraw %}
+  register: result_4_4_1
+  changed_when: result_4_4_1.stdout
+  check_mode: no
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: Define result_4_4_1_output
+  set_fact:
+    result_4_4_1_output: "{{ result_4_4_1.stdout }}"
+  when: result_4_4_1.stdout_lines
+  tags:
+    - audit
+    - cis-section5
+
+- name: "Restrict Home Directories to Owner Only"
+  file: path="{{ item.home_directory }}" mode=0700 owner="{{ item.user }}"
+  with_items: "{{ result_4_4_1_output|default([]) }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - result_4_4_1_output is defined
+    - result_4_4_1_output
+
+- name: "Find Directories of Dynamic Link Library Paths"
+  shell: |
+       /usr/sbin/ldconfig -v 2>/dev/null | awk -F: '/^\// {print $1}'
+  register: result_4_5_1
+  changed_when: 0
+  failed_when: result_4_5_1.stdout|match("(\.|\.\.)")
+  check_mode: no
+  ignore_errors: yes
+  tags:
+    - audit
+    - cis-section5
+
+- name: "Properties of Dynamic Link Library Directories"
+  stat: path="{{ item }}"
+  register: result_4_5_1_prop_dynamic_dir
+  with_items: "{{ result_4_5_1.stdout_lines }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - result_4_5_1.stdout_lines is defined
+    - result_4_5_1.stdout_lines
+
+- name: "Properties of Dynamic Link Library Directories"
+  set_fact:
+     result_4_5_1_prop_dynamic_dir_results: "{{ result_4_5_1_prop_dynamic_dir.results }}"
+  tags:
+    - patch
+    - cis-section5
+
+
+- name: "Restrict Dynamic Link Library Directories to root"
+  file: path="{{ item.stat.path }}" owner="root" group="root" mode=0755
+  with_items: "{{ result_4_5_1_prop_dynamic_dir_results|default([]) }}"
+  tags:
+    - patch
+    - cis-section5
+  when:
+    - result_4_5_1_prop_dynamic_dir_results is defined
+    - result_4_5_1_prop_dynamic_dir_results
+    - item.stat.isdir
+    - ( item.stat.pw_name != 'root' or item.stat.mode != '0755' or item.stat.gr_name != 'root' )
+
+- name: "Restrict Dynamic Link Library Directories to root"
+  debug: msg="Security check non-applicable"
+  changed_when: 0
+  tags:
+    - audit
+    - cis-section5

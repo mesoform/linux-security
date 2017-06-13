@@ -1,0 +1,58 @@
+---
+- block:
+  - name: "Security logs must be writeable only by root"
+    file:
+      path: "{{ item }}"
+      owner: "{{ sec_log_owner }}"
+      group: "{{ sec_log_group }}"
+      mode: "{{sec_log_mode }}"
+    with_items:
+      - /var/log/lastlog
+      - /var/log/btmp
+      - /var/log/wtmp
+    tags:
+      - fix
+      - step6
+
+  - lineinfile:
+      dest: /lib/tmpfiles.d/var.conf
+      regexp: "(?i)^#?f /var/log/wtmp.*"
+      line: "f /var/log/wtmp {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }} -"
+    tags:
+      - fix
+      - step6
+
+  - lineinfile:
+      dest: /lib/tmpfiles.d/var.conf
+      regexp: "(?i)^#?f /var/log/btmp.*"
+      line: "f /var/log/btmp {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }} -"
+    tags:
+      - fix
+      - step6
+
+  - template:
+      src: logrotate.conf.j2
+      dest: /etc/logrotate.conf
+      backup: yes
+      owner: root
+      group: root
+      mode: 0644
+    tags:
+      - fix
+      - step6
+
+- name: "Security logs containing security events must be readable by root"
+  file: path="{{ item }}" owner="root" group="root" mode=0600
+  with_items:
+    - /var/log/tallylog
+    - /var/log/secure
+    - /var/log/messages
+  tags:
+    - fix
+    - step6
+
+- name: "Restrict security log to root"
+  file: path="/var/log/audit" owner="root" group="root" mode=0700
+  tags:
+    - fix
+    - step6
