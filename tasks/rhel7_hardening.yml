@@ -10,7 +10,7 @@
     - fix
 
 - name: Run Step 2 Fixes
-  include: rhel7_hardening/section5.yml
+  include: rhel7_hardening/step2.yml
   tags:
     - step2
     - fix
