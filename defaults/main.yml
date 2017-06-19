@@ -80,7 +80,7 @@ bad_daemons:
   - portmap
   - tcpmux-server
   - ip6tables
-  - sshd
+#  - sshd
 
 good_daemons:
   - iptables
