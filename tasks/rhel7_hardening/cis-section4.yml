@@ -54,7 +54,7 @@
       - level
       - patch
       - cis-section4
-    when: result_cis_4_2_4.stdout_lines is defined and result_cis_ 4_2_4.stdout_lines
+    when: result_cis_4_2_4.stdout_lines is defined and result_cis_4_2_4.stdout_lines
 
 - name: "CIS 4.1.1.1 Ensure audit log storage size is configured"
   lineinfile:
