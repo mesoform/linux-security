@@ -1,7 +1,9 @@
 ---
-- hosts: test_rhel_instances
+- hosts: logstash
   gather_facts: yes
   become: true
+  remote_user: garethbrown
+
 
   roles:
     - ansible-os-security
