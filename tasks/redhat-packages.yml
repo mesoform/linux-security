@@ -11,6 +11,7 @@
     - tcpdump
     - iptables-services
     - audit
+    - net-tools
   become: true
   when: ansible_os_family == 'RedHat'
 
