@@ -1,8 +1,15 @@
 ---
-- name: "set root ownership and permissions"
+- name: "set root ownership and permissions (/etc/passwd)"
   file: path="{{ item }}" owner="root" group="root" mode=0644
   with_items:
     - "/etc/passwd"
+  tags:
+    - patch
+    - step4
+
+- name: "set root ownership and permissions (/etc/shadow)"
+  file: path="{{ item }}" owner="root" group="root" mode=0600
+  with_items:
     - "/etc/shadow"
   tags:
     - patch
