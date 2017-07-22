@@ -24,7 +24,7 @@
 
 - name: "Common get unlocked system accounts"
   shell: |
-    for user in $(awk -F: '($3 < {{ system_uid_max }}) {print $1}' /etc/passwd); do
+    for user in $(awk -F: '($3 < {{ system_uid_max|default(1000) }}) {print $1}' /etc/passwd); do
       passwd -S $user | awk '($2 != "LK") { print $1 }';
     done
   register: common_unlocked_system_accounts

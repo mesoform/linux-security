@@ -4,16 +4,19 @@
     get_url:
       url: https://repo.stackdriver.com/stack-install.sh
       dest: /root/
+    changed_when: false
 
   - get_url:
       url: https://dl.google.com/cloudagents/install-logging-agent.sh
       dest: /root/
+    changed_when: false
 
   - shell: |
       bash /root/stack-install.sh --write-gcm
       bash /root/install-logging-agent.sh
       rm /root/stack-install.sh
       rm /root/install-logging-agent.sh
+    changed_when: false
 
   tags:
     - gcp
@@ -23,3 +26,101 @@
     name: google-cloud-sdk
   tags:
     - gcp
+
+- block:
+  - name: update NTP servers (remove Google addresses)
+    lineinfile:
+      dest: /etc/ntp.conf
+      state: absent
+      regexp: '^server.*'
+  - name: update NTP Servers (add custom addresses)
+    lineinfile:
+      dest: /etc/ntp.conf
+      state: present
+      line: "server {{ item }} iburst"
+    with_items:
+      - "{{ ntp_servers }}"
+  - name: update NTP servers (stop DHCP overwriting ntp.conf)
+    file:
+      path: /etc/dhcp/dhclient.d/ntp.sh
+      state: absent
+  tags:
+    - gcp
+    - fix
+
+- block:
+  - name: update DNS resolvers (remove Google configuration)
+    lineinfile:
+      dest: /etc/resolv.conf
+      state: absent
+      regexp: '^(nameserver|search).*'
+  - name: update DNS resolvers (add custom nameservers)
+    lineinfile:
+      dest: /etc/resolv.conf
+      state: present
+      line: "nameserver {{ item }}"
+    with_items:
+      - "{{ dns_servers }}"
+  - name: update DNS resolvers (add custom domain)
+    lineinfile:
+      dest: /etc/resolv.conf
+      state: present
+      line: "search {{ dns_domains }}"
+    with_items:
+      - "{{ dns_servers }}"
+  - name: update DNS resolvers (set changes to persist over reboot)
+    blockinfile:
+      dest: /etc/audit/rules.d/audit.rules
+      marker: "# {mark} ANSIBLE MANAGED - DNS Resolvers"
+      block: |
+        DNS1=10.71.200.43
+        DNS2=10.71.200.44
+        DNS3=10.70.200.43
+        DOMAIN="{{ dns_domains }}"
+  tags:
+    - fix
+    - gcp
+
+- block:
+  - name: Configure Stackdriver (list unwanted files)
+    find:
+      paths: "/etc/google-fluentd/config.d"
+      patterns: '^(?=.*\.conf)((?!(syslog|forward|audit)\.conf)).*$'
+      use_regex: True
+    register: stackdriver_config
+  - name: Configure Stackdriver (delete unwanted files)
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items:
+      - "{{ stackdriver_config.files }}"
+    notify: reload fluentd
+    when: stackdriver_config is defined
+  - name: Configure Stackdriver (setup OS auditing)
+    copy:
+      src: stackdriver_audit.conf
+      dest: /etc/google-fluentd/config.d/audit.conf
+      backup: yes
+      owner: root
+      group: root
+      mode: 0640
+    notify: reload fluentd
+  tags:
+    - gcp
+    - fix
+    - logging
+
+- name: Setup application logging to Stackdriver
+  template:
+    src: stackdriver_app_log.conf.j2
+    dest: /etc/google-fluentd/config.d/{{ log_name }}.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: 0640
+  notify: reload fluentd
+  tags:
+    - gcp
+    - fix
+    - app_log
+  when: log_name is defined

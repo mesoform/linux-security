@@ -28,10 +28,15 @@
     failed_when: 0
     register: sshd_service_status
     listen: reload sshd
-
   - service:
       name: sshd
       state: reloaded
     become: true
     when: sshd_service_status.rc == 0
     listen: reload sshd
+
+- name: "reload fluentd config"
+  command: systemctl reload google-fluentd
+  ignore_errors: yes
+  changed_when: false
+  listen: reload fluentd

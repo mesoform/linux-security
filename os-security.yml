@@ -1,9 +1,11 @@
 ---
-- hosts: logstash
+## to create configuration to automatically send application logs to Stackdriver, set a variable called log_name to the name of
+## your log file in /var/log/. E.g. if the log file is /var/log/apache.log, pass "--extra-vars log_name=apache"
+
+- hosts: build_vm
   gather_facts: yes
   become: true
   remote_user: garethbrown
-
 
   roles:
     - ansible-os-security

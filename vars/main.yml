@@ -2,15 +2,25 @@
 
 allowed_gid_zero_users: " root\n sync\n shutdown\n halt\n operator"
 allowed_gid_zero_users_list:
-    - root
-    - sync
-    - shutdown
-    - halt
-    - operator
+  - root
+  - sync
+  - shutdown
+  - halt
+  - operator
 allowed_system_accounts:
-    - root
+  - root
 search_path_for_root:
-    - "/usr/local/sbin"
-    - "/usr/local/bin"
-    - "/usr/sbin"
-    - "/usr/bin"
+  - "/usr/local/sbin"
+  - "/usr/local/bin"
+  - "/usr/sbin"
+  - "/usr/bin"
+ntp_servers:
+  - "10.70.200.40"
+  - "10.71.200.40"
+
+dns_servers:
+  - "10.70.200.43"
+  - "10.71.200.43"
+  - "10.71.200.44"
+
+dns_domains: "uk.hsbc hsbc internal"
