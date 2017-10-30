@@ -1,6 +1,6 @@
 ---
 # defaults file for OS Hardening
-unix_sec_std_acct_date: "{{ lookup('pipe', 'date +%Y-%m-%d -d \"' + ansible_date_time.date  + ' + 90 day\"' ) }}"
+acct_date: "{{ lookup('pipe', 'date +%Y-%m-%d -d \"' + ansible_date_time.date  + ' + 90 day\"' ) }}"
 
 # RedHat defaults
 os_desktop_enable: false
