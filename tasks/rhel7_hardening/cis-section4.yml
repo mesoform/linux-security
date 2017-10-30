@@ -42,8 +42,10 @@
       - cis-section4
     when: result_cis_4_2_4.stdout_lines is defined and result_cis_4_2_4.stdout_lines
 
-  - file: path="{{ item.stat.path }}" owner={{ sec_log_owner }} group={{ sec_log_group }} mode=0600
-    when: item.stat.isreg
+  - file: path="{{ item.stat.path }}" owner="{{ sec_log_owner }}" group="{{ sec_log_group }}" mode=0600
+    when:
+      - item.stat.exists
+      - item.stat.isreg
     with_items: "{{ result_cis_4_2_4_stat.results }}"
 
   - lineinfile:
