@@ -353,7 +353,7 @@
 
 - name: "Set Password Change Minimum Number of Days"
   shell: |
-    for user in $(awk -F: '! /^(root|shutdown|sync)/ {if ($3 < {{ system_uid_max }} ) print $1}' /etc/passwd);do
+    for user in $(awk -F: '! /^(root|shutdown|sync)/ {if ($3 < {{ system_uid_max|default(1000) }} ) print $1}' /etc/passwd);do
          passwd -S  $user | awk '{if ($2 !~ "L") print $1}'
     done
   register: system_account_password_lock
