@@ -253,7 +253,7 @@
     - cis-section5
 
 - name: "CIS 5.4.1.1 Ensure password expiration is 90 days or less"
-  command: "chage -d {{ password_last_date.stdout }} -M 90 {{ item }}"
+  command: "chage -M 90 {{ item }}"
   with_items: "{{ user_password_expiration_days.stdout_lines }}"
   tags:
     - patch
