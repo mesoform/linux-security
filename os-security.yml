@@ -1,6 +1,7 @@
 ---
-## to create configuration to automatically send application logs to Stackdriver, set a variable called log_name to the name of
-## your log file in /var/log/. E.g. if the log file is /var/log/apache.log, pass "--extra-vars log_name=apache"
+## to create configuration to automatically send application logs to Stackdriver, set a variable called app_logs,
+## of type - list with the full path to the file.  E.g. if want some Apache logs, pass
+## "--extra-vars='{"app_logs": [/var/log/apache/access.log,/var/log/apache/error.log]}'"
 
 - hosts: build_vm
   gather_facts: yes

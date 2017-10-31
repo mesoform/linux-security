@@ -1,8 +1,11 @@
+{% for app_log in app_logs %}
 <source>
   type tail
   format none
-  path /var/log/{{ log_name }}.log
-  pos_file /var/lib/google-fluentd/pos/{{ log_name }}.pos
+  path {{ app_log }}
+  pos_file /var/lib/google-fluentd/pos/{{ app_log|replace("/", "_")||replace(".", "_") }}.pos
   read_from_head true
   tag audit
 </source>
+
+{% endfor %}

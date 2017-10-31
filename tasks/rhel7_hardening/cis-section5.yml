@@ -418,7 +418,7 @@
         done
         {% endraw %}
   register: result_4_4_1
-  changed_when: result_4_4_1.stdout
+  changed_when: 0
   check_mode: no
   ignore_errors: yes
   tags:

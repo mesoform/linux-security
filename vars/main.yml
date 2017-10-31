@@ -14,13 +14,5 @@ search_path_for_root:
   - "/usr/local/bin"
   - "/usr/sbin"
   - "/usr/bin"
-ntp_servers:
-  - "10.70.200.40"
-  - "10.71.200.40"
 
-dns_servers:
-  - "10.70.200.43"
-  - "10.71.200.43"
-  - "10.71.200.44"
-
-dns_domains: "uk.hsbc hsbc internal"
+dns_domains: "gorillass.co.uk mesoform.com"
