@@ -1,3 +1,4 @@
+{% if app_logs is defined %}
 {% for app_log in app_logs %}
 <source>
   type tail
@@ -9,3 +10,4 @@
 </source>
 
 {% endfor %}
+{% endif %}

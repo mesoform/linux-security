@@ -108,7 +108,7 @@
   when: result_2_5_1_root.stdout is defined and result_2_5_1_root.stdout
 
 - name: "Ensure no other user has the same home directory as root"
-  shell: "/bin/awk -F: '{if ($1 !~ /^root$/ && $6 == \"/root\") print $1}' /etc/passwd"
+  shell: "/bin/awk -F: '{if ($1 !~ /^root$/ && $6 == \"{{ result_2_5_1_root.stdout }}\") print $1}' /etc/passwd"
   register: result_2_5_3_users_with_root_homedir
   check_mode: "no"
   changed_when: 0
