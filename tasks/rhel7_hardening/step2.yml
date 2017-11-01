@@ -126,7 +126,7 @@
     - step2
 
 - name: "The root search paths must be writable by root"
-  file: path="{{ item }}" owner="root" mode=0755
+  file: path="{{ item }}" owner="root" mode=0555
   with_flattened:
     - "{{ search_path_for_root }}"
     - "{{ common_execution_search_path.stdout_lines }}"
