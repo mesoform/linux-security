@@ -8,7 +8,7 @@
     - step4
 
 - name: "set root ownership and permissions (/etc/shadow)"
-  file: path="{{ item }}" owner="root" group="root" mode=0600
+  file: path="{{ item }}" owner="root" group="root" mode=0000
   with_items:
     - "/etc/shadow"
   tags:
@@ -44,7 +44,7 @@
   - name: "Set the users umask to not allow world writeable file to be created"
     lineinfile:
       dest: "{{ item }}"
-      regexp: '^(\s+umask)'
+      regexp: '(\S+)umask'
       line: '        umask 027'
       backrefs: no
     tags:
