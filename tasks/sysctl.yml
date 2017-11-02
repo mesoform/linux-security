@@ -13,8 +13,9 @@
 
 - name: Change various sysctl-settings
   sysctl:
-    name: '{{item.key}}'
-    value: '{{item.value}}'
+    sysctl_file: '/etc/sysctl.d/{{ item.key }}.conf'
+    name: '{{ item.key }}'
+    value: '{{ item.value }}'
     sysctl_set: yes
     state: present
     reload: yes
