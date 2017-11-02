@@ -6,3 +6,6 @@ dns_servers:
   - "10.0.1.2"
   - "10.0.2.2"
 
+dns_domains: "gorillass.co.uk mesoform.com"
+
+

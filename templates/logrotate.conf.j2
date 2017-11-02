@@ -17,17 +17,33 @@ dateext
 # RPM packages drop log rotation information into this directory
 include /etc/logrotate.d
 
-# no packages own wtmp and btmp -- we'll rotate them here
-/var/log/wtmp {
+# System logs with security info
+{% for sec_log in sec_logs %}
+{{ sec_log }}
+{% endfor %}
+{
     monthly
-    create {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }}
+    missingok
 	minsize 1M
     rotate 1
+    sharedscripts
+    postrotate
+        /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+    endscript
 }
 
-/var/log/btmp {
+# Standard system logs
+{% for sys_log in sys_logs %}
+{{ sys_log }}
+{% endfor %}
+{
+    daily
     missingok
-    monthly
-    create {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }}
+    create {{ sys_log_mode }} {{ sec_log_owner }} msglogro
+	minsize 1M
     rotate 1
+    sharedscripts
+    postrotate
+        /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+    endscript
 }

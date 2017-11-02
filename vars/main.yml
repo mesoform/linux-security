@@ -14,5 +14,13 @@ search_path_for_root:
   - "/usr/local/bin"
   - "/usr/sbin"
   - "/usr/bin"
-
-dns_domains: "gorillass.co.uk mesoform.com"
+sec_logs:
+  - /var/log/secure
+  - /var/log/btmp
+  - /var/log/maillog
+  - /var/log/tallylog
+  - /var/log/audit/audit.log
+sys_logs:
+  - /var/log/messages
+  - /var/log/dmesg
+  - /var/log/lastlog

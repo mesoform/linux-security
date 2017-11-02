@@ -38,7 +38,8 @@ os_security_suid_sgid_remove_from_unknown: false
 os_security_packages_clean: true
 
 # default file permissions
-sec_log_mode: "0640"
+sys_log_mode: "0640"
+sec_log_mode: "0600"
 sec_log_owner: "root"
 sec_log_group: "root"
 

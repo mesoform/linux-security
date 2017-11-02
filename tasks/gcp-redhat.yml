@@ -1,4 +1,9 @@
 ---
+- name: Include GCP variables
+  include_vars: gcp.yml
+  tags:
+    - gcp
+
 - block:
   - name: "install Stackdriver agent"
     get_url:
@@ -32,7 +37,7 @@
     lineinfile:
       dest: /etc/ntp.conf
       state: absent
-      regexp: '^server.*'
+      regexp: '^\s*server\s+(?!({{ ntp_servers.0 }}|{{ ntp_servers.1 }})).*$'
   - name: update NTP Servers (add custom addresses)
     lineinfile:
       dest: /etc/ntp.conf
@@ -47,17 +52,24 @@
   tags:
     - gcp
     - fix
+    - ntp
 
 - block:
-  - name: update DNS resolvers (remove Google configuration)
+  - name: update DNS resolvers (remove undesired name servers)
     lineinfile:
       dest: /etc/resolv.conf
       state: absent
-      regexp: '^(nameserver|search).*'
+      regexp: '^\s*nameserver\s+(?!({{ dns_servers.0 }}|{{ dns_servers.1 }}|{{ dns_servers.2 }})).*$'
+  - name: update DNS resolvers (remove undesired search domains)
+    lineinfile:
+      dest: /etc/resolv.conf
+      state: absent
+      regexp: '^\s*search\s+(?!{{ dns_domains }}).*$'
   - name: update DNS resolvers (add custom nameservers)
     lineinfile:
       dest: /etc/resolv.conf
       state: present
+      regexp: '^\s*nameserver\s+{{ item }}.*$'
       line: "nameserver {{ item }}"
     with_items:
       - "{{ dns_servers }}"
@@ -65,30 +77,37 @@
     lineinfile:
       dest: /etc/resolv.conf
       state: present
+      regexp: '^\s*search\s+{{ dns_domains }}.*$'
       line: "search {{ dns_domains }}"
-    with_items:
-      - "{{ dns_servers }}"
   - name: update DNS resolvers (set changes to persist over reboot)
-    blockinfile:
-      dest: /etc/audit/rules.d/audit.rules
-      marker: "# {mark} ANSIBLE MANAGED - DNS Resolvers"
-      block: |
-        DNS1=10.71.200.43
-        DNS2=10.71.200.44
-        DNS3=10.70.200.43
-        DOMAIN="{{ dns_domains }}"
+    lineinfile:
+      dest: /etc/sysconfig/network-scripts/ifcfg-eth0
+      line: 'DNS{{ item.0 }}={{ item.1 }}'
+    with_indexed_items:
+      - "{{ dns_servers }}"
+  - name: update DNS domains (set changes to persist over reboot)
+    lineinfile:
+      dest: /etc/sysconfig/network-scripts/ifcfg-eth0
+      line: 'DOMAIN={{ dns_domains }}'
   tags:
     - fix
     - gcp
+    - dns
 
 - block:
-  - name: Configure Stackdriver (list unwanted files)
+  - name: Configure Stackdriver Logging (list unwanted files)
     find:
       paths: "/etc/google-fluentd/config.d"
       patterns: '^(?=.*\.conf)((?!(syslog|forward|audit)\.conf)).*$'
       use_regex: True
     register: stackdriver_config
-  - name: Configure Stackdriver (delete unwanted files)
+  - name: Configure Stackdriver Logging (create google-fluent directory)
+    file:
+      path: /etc/google-fluentd/config.d
+      state: directory
+      mode: u=rwx,g=rx
+    when: stackdriver_config.examined == 0
+  - name: Configure Stackdriver Logging (delete unwanted files)
     file:
       path: "{{ item.path }}"
       state: absent
@@ -96,7 +115,7 @@
       - "{{ stackdriver_config.files }}"
     notify: reload fluentd
     when: stackdriver_config is defined
-  - name: Configure Stackdriver (setup OS auditing)
+  - name: Configure Stackdriver Logging (setup OS auditing)
     copy:
       src: stackdriver_audit.conf
       dest: /etc/google-fluentd/config.d/audit.conf
