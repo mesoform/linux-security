@@ -82,7 +82,7 @@
   - name: update DNS resolvers (set changes to persist over reboot)
     lineinfile:
       dest: /etc/sysconfig/network-scripts/ifcfg-eth0
-      line: 'DNS{{ item.0 }}={{ item.1 }}'
+      line: 'DNS{{ item.0 + 1 }}={{ item.1 }}'
     with_indexed_items:
       - "{{ dns_servers }}"
   - name: update DNS domains (set changes to persist over reboot)
@@ -117,7 +117,7 @@
     when: stackdriver_config is defined
   - name: Configure Stackdriver Logging (setup OS auditing)
     template:
-      src: stackdriver_audit_log.conf.j2
+      src: stackdriver_audit.conf.j2
       dest: /etc/google-fluentd/config.d/audit.conf
       backup: yes
       owner: root
