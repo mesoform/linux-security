@@ -116,8 +116,8 @@
     notify: reload fluentd
     when: stackdriver_config is defined
   - name: Configure Stackdriver Logging (setup OS auditing)
-    copy:
-      src: stackdriver_audit.conf
+    template:
+      src: stackdriver_audit_log.conf.j2
       dest: /etc/google-fluentd/config.d/audit.conf
       backup: yes
       owner: root
