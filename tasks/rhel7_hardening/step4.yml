@@ -60,6 +60,10 @@
   tags:
     - audit
     - step4
+
+# ToDo: make this a list variable and loop over the list. Other dirs would be
+# /var/crash. For lineinfile use somethig like {{ item | direname | split }}
+# for destination file
 - block:
   - name: "Core dump directory MUST be secured by root"
     file: path="/var/lib/systemd/coredump" owner="root" group="root" mode=0700
