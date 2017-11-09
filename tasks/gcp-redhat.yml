@@ -4,6 +4,7 @@
   tags:
     - gcp
 
+# ToDo: The tasks in this block need better changed_when and failed_when because script failures pass as ok
 - block:
   - name: "install Stackdriver agent"
     get_url:
