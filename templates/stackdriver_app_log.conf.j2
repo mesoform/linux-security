@@ -1,7 +1,7 @@
 {% if app_logs is defined %}
 {% for app_log in app_logs %}
 <source>
-  type tail
+  @type tail
   format none
   path {{ app_log }}
   pos_file /var/lib/google-fluentd/pos/{{ app_log|replace("/", "_")||replace(".", "_") }}.pos

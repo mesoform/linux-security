@@ -1,6 +1,6 @@
 {% for security_log in sec_logs %}
 <source>
-  type tail
+  @type tail
   format none
   path {{ security_log }}
   pos_file /var/lib/google-fluentd/pos/{{ security_log|replace("/", "_")|replace(".", "_") }}.pos
