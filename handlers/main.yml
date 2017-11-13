@@ -36,7 +36,13 @@
     listen: reload sshd
 
 - name: "reload fluentd config"
-  command: systemctl reload google-fluentd
+  command: systemctl reload-or-restart google-fluentd
   ignore_errors: yes
   changed_when: false
   listen: reload fluentd
+
+- name: "reload Google's collectd config"
+  command: systemctl reload-or-restart stackdriver-agent
+  ignore_errors: yes
+  changed_when: false
+  listen: reload stackdriver-agent

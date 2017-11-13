@@ -4,28 +4,50 @@
   tags:
     - gcp
 
-# ToDo: The tasks in this block need better changed_when and failed_when because script failures pass as ok
 - block:
-  - name: "install Stackdriver agent"
+  - name: "install Stackdriver collectd agent (check install status)"
+    command: rpm -q --quiet stackdriver-agent
+    register: collectd_installed
+    failed_when:
+      - collectd_installed.rc != 0
+      - collectd_installed.rc != 1
+    changed_when: false
+  - name: "install Stackdriver collectd agent (download install script)"
     get_url:
       url: https://repo.stackdriver.com/stack-install.sh
       dest: /root/
     changed_when: false
+    when: collectd_installed.rc == 1
+  - name: "install Stackdriver collectd agent (run install script)"
+    shell: |
+      bash /root/stack-install.sh --write-gcm
+      rm /root/stack-install.sh
+    when: collectd_installed.rc == 1
+  tags:
+    - gcp
 
-  - get_url:
+- block:
+  - name: "install Stackdriver fluentd agent (check install status)"
+    command: rpm -q --quiet google-fluentd
+    register: fluentd_installed
+    failed_when:
+      - fluentd_installed.rc != 0
+      - fluentd_installed.rc != 1
+    changed_when: false
+  - name: "install Stackdriver fluentd agent (download install script)"
+    get_url:
       url: https://dl.google.com/cloudagents/install-logging-agent.sh
       dest: /root/
     changed_when: false
-
-  - shell: |
-      bash /root/stack-install.sh --write-gcm
+    when: fluentd_installed.rc == 1
+  - name: "install Stackdriver fluentd agent (run install script)"
+    shell: |
       bash /root/install-logging-agent.sh
-      rm /root/stack-install.sh
       rm /root/install-logging-agent.sh
-    changed_when: false
-
+    when: fluentd_installed.rc == 1
   tags:
     - gcp
+
 
 - name: "install Google Cloud SDK"
   yum:
@@ -95,6 +117,20 @@
     - gcp
     - dns
 
+- name: If using a network proxy, never proxy requests to the Google metadata server
+  lineinfile:
+    path: /etc/profile.d/google-metadata.sh
+    backup: yes
+    owner: root
+    group: root
+    mode: 0644
+    create: yes
+    line: 'export no_proxy=169.254.169.254,metadata,metadata.google.internal'
+  when: google_api_proxy is defined
+  tags:
+    - fix
+    - gcp
+
 - block:
   - name: Configure Stackdriver Logging (list unwanted files)
     find:
@@ -125,6 +161,20 @@
       group: root
       mode: 0640
     notify: reload fluentd
+  - name: Configure Stackdriver Logging (use a network proxy)
+    blockinfile:
+      path: /etc/sysconfig/google-fluentd
+      backup: yes
+      owner: root
+      group: root
+      mode: 0640
+      create: yes
+      block: |
+        export HTTP_PROXY=http://{{ google_api_proxy }}:{{ google_api_proxy_port | default(80) }}
+        export HTTPS_PROXY=http://{{ google_api_proxy }}:{{ google_api_proxy_port | default(80) }}
+        export no_proxy=169.254.169.254,metadata,metadata.google.internal
+    when: google_api_proxy is defined
+    notify: reload fluentd
   tags:
     - gcp
     - fix
@@ -144,3 +194,40 @@
     - fix
     - app_log
   when: log_name is defined
+
+- block:
+  - name: Configure Stackdriver Monitoring (reconfigure proxy)
+    lineinfile:
+      path: /etc/sysconfig/stackdriver
+      backup: yes
+      owner: root
+      group: root
+      mode: 0640
+      create: yes
+      regexp: '^\S*PROXY_URL=".+"$'
+      line: 'PROXY_URL="http://{{ google_api_proxy }}:{{ google_api_proxy_port | default(80) }}"'
+      backrefs: yes
+    register: stackdriver_proxy
+    when: google_api_proxy is defined
+    notify: reload stackdriver-agent
+  - name: Configure Stackdriver Monitoring (add proxy)
+    lineinfile:
+      path: /etc/sysconfig/stackdriver
+      backup: yes
+      owner: root
+      group: root
+      mode: 0640
+      create: yes
+      regexp: '^\S*PROXY_URL=""$'
+      line: 'PROXY_URL="http://{{ google_api_proxy }}:{{ google_api_proxy_port | default(80) }}"'
+      backrefs: yes
+    when:
+    - google_api_proxy is defined
+    - stackdriver_proxy.changed == false
+    notify: reload stackdriver-agent
+
+  tags:
+    - gcp
+    - fix
+    - logging
+
