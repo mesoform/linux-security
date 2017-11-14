@@ -1,9 +1,2 @@
 ---
 system_uid_max: 1000
-security_logs:
-  - /var/log/lastlog
-  - /var/log/btmp
-  - /var/log/wtmp
-  - /var/log/tallylog
-  - /var/log/secure
-  - /var/log/messages
