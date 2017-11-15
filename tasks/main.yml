@@ -45,12 +45,12 @@
 - include: motd.yml
   when: ansible_os_family == 'RedHat'
 
-- include: gcp-redhat.yml
-  when:
-    - ansible_os_family == 'RedHat'
-    - ansible_product_name == "Google Compute Engine"
-
 - include: rhel7_hardening.yml
   when:
     - ansible_os_family == 'RedHat'
     - ansible_distribution_major_version | version_compare('7', '==')
+
+- include: gcp-redhat.yml
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_product_name == "Google Compute Engine"

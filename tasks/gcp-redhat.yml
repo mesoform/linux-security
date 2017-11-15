@@ -100,8 +100,9 @@
     lineinfile:
       dest: /etc/resolv.conf
       state: present
-      regexp: '^\s*search\s+{{ dns_domains }}.*$'
-      line: "search {{ dns_domains }}"
+      regexp: '^\s*search\s+{{ dns_domains }}(.*)$'
+      line: 'search {{ dns_domains }}\1'
+      backrefs: yes
   - name: update DNS resolvers (set changes to persist over reboot)
     lineinfile:
       dest: /etc/sysconfig/network-scripts/ifcfg-eth0
@@ -111,7 +112,7 @@
   - name: update DNS domains (set changes to persist over reboot)
     lineinfile:
       dest: /etc/sysconfig/network-scripts/ifcfg-eth0
-      line: 'DOMAIN={{ dns_domains }}'
+      line: 'DOMAIN="{{ dns_domains }}"'
   tags:
     - fix
     - gcp
@@ -231,3 +232,18 @@
     - fix
     - logging
 
+- name: "Allow packet redirect receiving is enabled for configured gateways"
+  sysctl:
+    sysctl_file: '/etc/sysctl.d/{{ item.key }}.conf'
+    name: '{{ item.key }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+    ignoreerrors: yes
+  with_dict:
+    net.ipv4.conf.all.secure_redirects: 1
+    net.ipv4.conf.default.secure_redirects: 1
+  tags:
+    - gcp
+    - fix
