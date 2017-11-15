@@ -17,13 +17,11 @@ search_path_for_root:
 sys_logs:
   - /var/log/messages
   - /var/log/dmesg
-  - /var/log/lastlog
 sec_logs:
   - /var/log/lastlog
   - /var/log/btmp
   - /var/log/wtmp
   - /var/log/tallylog
   - /var/log/secure
-  - /var/log/messages
   - /var/log/maillog
   - /var/log/audit/audit.log
