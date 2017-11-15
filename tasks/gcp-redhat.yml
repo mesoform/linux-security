@@ -230,7 +230,7 @@
   tags:
     - gcp
     - fix
-    - logging
+    - monitoring
 
 - name: "Allow packet redirect receiving is enabled for configured gateways"
   sysctl:
