@@ -4,7 +4,7 @@
   @type tail
   format none
   path {{ app_log }}
-  pos_file /var/lib/google-fluentd/pos/{{ app_log|replace("/", "_")||replace(".", "_") }}.pos
+  pos_file /var/lib/google-fluentd/pos/{{ app_log|replace("/", "_")|replace(".", "_") }}.pos
   read_from_head true
   tag audit
 </source>
