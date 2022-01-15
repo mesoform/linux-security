@@ -1,8 +1,7 @@
-baseline
+Linux security
 =========
 
-An Ansible Role that applies baseline security settings for: CentOS, RHEL,
-Ubuntu, Windows 2008 R2 and Windows 2012 R2.
+An Ansible Role that applies baseline security settings for: Fedora and Debian Linux distros
 
 
 Example Playbook
@@ -13,3 +12,11 @@ Example Playbook
          - { role: baseline }
 
 
+
+
+## Official stuff
+
+- [Contributing](https://github.com/mesoform/documentation/blob/main/CONTRIBUTING.md)
+- [Code of Conduct](https://github.com/mesoform/documentation/blob/main/CODE_OF_CONDUCT.md)
+- [Licence](https://github.com/mesoform/linux-security/blob/main/LICENSE)
+- [Contact](https://mesoform.com/contact)
