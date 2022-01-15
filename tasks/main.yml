@@ -45,10 +45,76 @@
 - include: motd.yml
   when: ansible_os_family == 'RedHat'
 
-- include: rhel7_hardening.yml
-  when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version | version_compare('7', '==')
+- name: common
+  include: hardening/common.yml
+  tags:
+    - common
+
+- name: Run Step 1 Fixes
+  include: hardening/step1.yml
+  tags:
+    - step1
+    - fix
+
+- name: Run Step 2 Fixes
+  include: hardening/step2.yml
+  tags:
+    - step2
+    - fix
+
+- name: Run Step 3 Fixes
+  include: hardening/step3.yml
+  tags:
+    - fix
+    - step3
+
+- name: Run Step 4 Fixes
+  include: hardening/step4.yml
+  tags:
+    - step4
+    - fix
+
+- name: Run Step 5 Fixes
+  include: hardening/step5.yml
+  tags:
+    - step5
+    - fix
+
+- name: Run Step 6 Fixes
+  include: hardening/step6.yml
+  tags:
+    - step6
+    - fix
+
+- name: CIS Section 1 Fixes
+  include: hardening/cis-section1.yml
+  tags:
+    - cis-section1
+    - fix
+
+- name: CIS Section 3 Fixes
+  include: hardening/cis-section3.yml
+  tags:
+    - cis-section3
+    - fix
+
+- name: CIS Section 4 Fixes
+  include: hardening/cis-section4.yml
+  tags:
+    - cis-section4
+    - fix
+
+- name: CIS Section 5 Fixes
+  include: hardening/cis-section5.yml
+  tags:
+    - cis-section5
+    - fix
+
+- name: CIS Section 6 Fixes
+  include: hardening/cis-section6.yml
+  tags:
+    - cis-section6
+    - fix
 
 - include: gcp-redhat.yml
   when:
