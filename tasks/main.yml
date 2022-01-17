@@ -24,19 +24,19 @@
   tags:
     - always
 
-- include: redhat-packages.yml
+- include_tasks: redhat-packages.yml
   when: ansible_os_family == 'RedHat'
 
-- include: sysctl.yml
+- include_tasks: sysctl.yml
 
-- include: services.yml
+- include_tasks: services.yml
 
-- include: minimise-access.yml
+- include_tasks: minimise-access.yml
 
-#- include: auditd.yml
+#- include_tasks: auditd.yml
 #  when: ansible_os_family == 'RedHat'
 
-- include: motd.yml
+- include_tasks: motd.yml
 
 - name: common
   include: hardening/common.yml
@@ -109,7 +109,7 @@
 #    - cis-section6
 #    - fix
 
-- include: gcp-redhat.yml
+- include_tasks: gcp-redhat.yml
   when:
     - ansible_os_family == 'RedHat'
     - ansible_product_name == "Google Compute Engine"
