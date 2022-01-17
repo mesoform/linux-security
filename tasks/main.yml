@@ -43,11 +43,11 @@
   tags:
     - common
 
-- name: Run Step 1 Fixes
-  include: hardening/step1.yml
-  tags:
-    - step1
-    - fix
+#- name: Run Step 1 Fixes
+#  include: hardening/step1.yml
+#  tags:
+#    - step1
+#    - fix
 
 - name: Run Step 2 Fixes
   include: hardening/step2.yml
@@ -103,11 +103,11 @@
     - cis-section5
     - fix
 
-- name: CIS Section 6 Fixes
-  include: hardening/cis-section6.yml
-  tags:
-    - cis-section6
-    - fix
+#- name: CIS Section 6 Fixes
+#  include: hardening/cis-section6.yml
+#  tags:
+#    - cis-section6
+#    - fix
 
 - include: gcp-redhat.yml
   when:
