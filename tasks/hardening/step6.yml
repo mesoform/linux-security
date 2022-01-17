@@ -10,6 +10,7 @@
 
   - name: "System logs must be writeable only by root (tmpfiles.d)"
     lineinfile:
+      create: yes
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f {{ item }}.*"
       line: "f {{ item }} {{ sys_log_mode }} {{ sec_log_owner }} -"
@@ -27,6 +28,7 @@
       - "{{ sec_logs }}"
   - name: "Security logs containing security events must only be readable by root (tmpfiles.d)"
     lineinfile:
+      create: yes
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f {{ item }}.*"
       line: "f {{ item }} {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }} -"

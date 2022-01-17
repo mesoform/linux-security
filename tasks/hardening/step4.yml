@@ -33,6 +33,7 @@
 
 - name: "Set System Default Umask"
   lineinfile:
+    create: yes
     dest: /etc/login.defs
     regexp: (?i)^#?UMASK
     line: UMASK 027
@@ -73,6 +74,7 @@
       - step4
 
   - lineinfile:
+      create: yes
       dest: /lib/tmpfiles.d/systemd.conf
       regexp: "(?i)^#?d /var/lib/systemd/coredump.*"
       line: 'd /var/lib/systemd/coredump 0700 root root 3d'

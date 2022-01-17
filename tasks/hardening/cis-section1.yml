@@ -151,6 +151,7 @@
 
 - name: "CIS 1.5.1 Ensure core dumps are restricted "
   lineinfile:
+    create: yes
     dest: "/etc/security/limits.conf"
     regexp: '^\*\s+hard\s+core'
     line: '*     hard   core    0'

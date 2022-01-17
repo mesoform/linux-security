@@ -3,6 +3,7 @@
 
 - name: "CIS 3.2.1 Ensure source routed packets are not accepted"
   lineinfile:
+    create: yes
     dest: "/etc/init.d/functions"
     regexp: '^umask'
     line: 'umask 027'

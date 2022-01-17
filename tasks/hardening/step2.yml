@@ -79,6 +79,7 @@
 
 - name: "Disable SSH root login"
   lineinfile:
+    create: yes
     dest: /etc/ssh/sshd_config
     regexp: "(?i)^#?PermitRootLogin"
     line: "PermitRootLogin no"

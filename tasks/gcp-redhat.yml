@@ -58,11 +58,13 @@
 - block:
   - name: update NTP servers (remove Google addresses)
     lineinfile:
+      create: yes
       dest: /etc/ntp.conf
       state: absent
       regexp: '^\s*server\s+(?!({{ ntp_servers.0 }}|{{ ntp_servers.1 }})).*$'
   - name: update NTP Servers (add custom addresses)
     lineinfile:
+      create: yes
       dest: /etc/ntp.conf
       state: present
       line: "server {{ item }} iburst"
@@ -80,16 +82,19 @@
 - block:
   - name: update DNS resolvers (remove undesired name servers)
     lineinfile:
+      create: yes
       dest: /etc/resolv.conf
       state: absent
       regexp: '^\s*nameserver\s+(?!({{ dns_servers.0 }}|{{ dns_servers.1 }}|{{ dns_servers.2 }})).*$'
   - name: update DNS resolvers (remove undesired search domains)
     lineinfile:
+      create: yes
       dest: /etc/resolv.conf
       state: absent
       regexp: '^\s*search\s+(?!{{ dns_domains }}).*$'
   - name: update DNS resolvers (add custom nameservers)
     lineinfile:
+      create: yes
       dest: /etc/resolv.conf
       state: present
       regexp: '^\s*nameserver\s+{{ item }}.*$'
@@ -98,6 +103,7 @@
       - "{{ dns_servers }}"
   - name: update DNS resolvers (add custom domain)
     lineinfile:
+      create: yes
       dest: /etc/resolv.conf
       state: present
       regexp: '^\s*search\s+{{ dns_domains }}(.*)$'
@@ -105,12 +111,14 @@
       backrefs: yes
   - name: update DNS resolvers (set changes to persist over reboot)
     lineinfile:
+      create: yes
       dest: /etc/sysconfig/network-scripts/ifcfg-eth0
       line: 'DNS{{ item.0 + 1 }}={{ item.1 }}'
     with_indexed_items:
       - "{{ dns_servers }}"
   - name: update DNS domains (set changes to persist over reboot)
     lineinfile:
+      create: yes
       dest: /etc/sysconfig/network-scripts/ifcfg-eth0
       line: 'DOMAIN="{{ dns_domains }}"'
   tags:

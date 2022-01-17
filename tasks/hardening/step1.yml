@@ -10,6 +10,7 @@
 
 #- name: "prevent auto-mounting of detachable storage"
   #lineinfile:
+  #  create: yes
   #  dest: XXXXXXXXXX
   #  regexp: XXXXXXXXXX
   #  line: XXXXXXXXXX
@@ -31,6 +32,7 @@
 
 #- name: "prevent auto-mounting of detachable storage"
   #lineinfile:
+  #  create: yes
   #  dest: XXXXXXXXXX
   #  regexp: XXXXXXXXXX
   #  line: XXXXXXXXXX

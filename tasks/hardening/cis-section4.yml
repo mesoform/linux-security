@@ -49,6 +49,7 @@
     with_items: "{{ result_cis_4_2_4_stat.results }}"
 
   - lineinfile:
+      create: yes
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f /var/log/boot\\.log.*"
       line: "f /var/log/boot.log 0600 {{ sec_log_owner }} {{ sec_log_group }} -"
@@ -60,6 +61,7 @@
 
 - name: "CIS 4.1.1.1 Ensure audit log storage size is configured"
   lineinfile:
+    create: yes
     dest: /etc/audit/auditd.conf
     regexp: "(?i)^#?max_log_file +.*"
     line: 'max_log_file = 20'
@@ -70,6 +72,7 @@
 
 - name: "CIS 4.1.1.2 Ensure system is disabled when audit logs are full"
   lineinfile:
+    create: yes
     dest: /etc/audit/auditd.conf
     regexp: "(?i)^#?space_left_action.*"
     line: 'space_left_action = email'
@@ -81,6 +84,7 @@
 
 - name: "CIS 4.1.1.2 Ensure system is disabled when audit logs are full"
   lineinfile:
+    create: yes
     dest: /etc/audit/auditd.conf
     regexp: "(?i)^#?admin_space_left_action.*"
     line: 'admin_space_left_action = halt'
@@ -92,6 +96,7 @@
 
 - name: "CIS 4.1.1.3 Ensure audit logs are not automatically deleted"
   lineinfile:
+    create: yes
     dest: /etc/audit/auditd.conf
     regexp: "(?i)^#?max_log_file_action.*"
     line: 'max_log_file_action = keep_logs'
@@ -103,6 +108,7 @@
 
 - name: "CIS 4.1.3 Ensure auditing for processes that start prior to auditd is enabled"
   lineinfile:
+    create: yes
     dest: /etc/default/grub
     regexp: '^(GRUB_CMDLINE_LINUX)="(((?!audit=1).)*)"$'
     line: '\1="\2 audit=1"'
