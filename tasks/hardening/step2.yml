@@ -136,7 +136,7 @@
 
 - name: "Search for files that are executable and writable by non root users"
   shell: |
-         /bin/find "{{ item }}" -type f -executable  -a \( -perm /222 -a ! -uid 0  \)
+          find "{{ item }}" -type f -executable  -a \( -perm /222 -a ! -uid 0  \)
   register: result_2_6_1_search_path
   failed_when: result_2_6_1_search_path.stdout
   changed_when: 0
