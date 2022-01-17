@@ -44,6 +44,6 @@
     owner: root
     group: root
     mode: 0644
-tags:
-  - fix
-  - step6
+  tags:
+    - fix
+    - step6
