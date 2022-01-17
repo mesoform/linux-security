@@ -21,14 +21,15 @@
   command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
 - block:
-  - name: "reload sshd config"
+  - name: "sshd status"
     command: systemctl status sshd
     ignore_errors: yes
     changed_when: false
     failed_when: 0
     register: sshd_service_status
     listen: reload sshd
-  - service:
+  - name: "reload sshd config"
+    service:
       name: sshd
       state: reloaded
     become: true

@@ -8,7 +8,8 @@
     with_items:
       - "{{ sys_logs }}"
 
-  - lineinfile:
+  - name: "System logs must be writeable only by root (tmpfiles.d)"
+    lineinfile:
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f {{ item }}.*"
       line: "f {{ item }} {{ sys_log_mode }} {{ sec_log_owner }} -"
@@ -24,8 +25,8 @@
       mode: "{{ sec_log_mode }}"
     with_items:
       - "{{ sec_logs }}"
-
-  - lineinfile:
+  - name: "Security logs containing security events must only be readable by root (tmpfiles.d)"
+    lineinfile:
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f {{ item }}.*"
       line: "f {{ item }} {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }} -"
@@ -35,7 +36,8 @@
     - fix
     - step6
 
-  - template:
+  - name: add log rotation from template
+    template:
       src: logrotate.conf.j2
       dest: /etc/logrotate.conf
       backup: yes
