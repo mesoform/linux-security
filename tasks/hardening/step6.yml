@@ -36,14 +36,14 @@
     - fix
     - step6
 
-  - name: add log rotation from template
-    template:
-      src: logrotate.conf.j2
-      dest: /etc/logrotate.conf
-      backup: yes
-      owner: root
-      group: root
-      mode: 0644
-  tags:
-    - fix
-    - step6
+- name: add log rotation from template
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: 0644
+tags:
+  - fix
+  - step6
