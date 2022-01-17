@@ -20,7 +20,7 @@
     msg: "This OS is not supported by this role"
   when:
     - ansible_os_family != 'RedHat'
-    - ansible_os_family != 'Windows'
+    - ansible_os_family != 'Debian'
   tags:
     - always
 
@@ -28,22 +28,15 @@
   when: ansible_os_family == 'RedHat'
 
 - include: sysctl.yml
-  when: ansible_os_family == 'RedHat'
 
 - include: services.yml
-  when: ansible_os_family == 'RedHat'
 
 - include: minimise-access.yml
-  when: ansible_os_family == 'RedHat'
-
-- include: windows.yml
-  when: ansible_os_family == 'Windows'
 
 #- include: auditd.yml
 #  when: ansible_os_family == 'RedHat'
 
 - include: motd.yml
-  when: ansible_os_family == 'RedHat'
 
 - name: common
   include: hardening/common.yml

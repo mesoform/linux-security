@@ -7,7 +7,7 @@
   become: true
 
 - name: Set the default mask for all process
-  template: src='rhel_sysconfig_init.j2' dest='/etc/sysconfig/init' owner=root group=root mode=0544
+  template: src='sysconfig_init.j2' dest='/etc/sysconfig/init' owner=root group=root mode=0544
   become: true
   when: ansible_os_family == 'RedHat'
 
