@@ -274,6 +274,7 @@
 
 - name: "CIS 5.4.4 Ensure default user umask is 027 or more restrictive (Set Daemon Umask)"
   lineinfile:
+    create: yes
     dest: "/etc/bashrc"
     regexp: '^umask'
     line: 'umask 027'

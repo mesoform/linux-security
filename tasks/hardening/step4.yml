@@ -43,6 +43,7 @@
 - block:
   - name: "Set the users umask to not allow world writeable file to be created"
     lineinfile:
+      create: yes
       dest: "{{ item }}"
       regexp: '(\S+)umask'
       line: '        umask 027'
