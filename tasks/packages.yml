@@ -1,11 +1,14 @@
 ---
 - name: Install packages
-  package: name='{{item}}'
+  package:
+    name: '{{item}}'
   become: true
   with_items: "{{ good_packages }}"
 
 - name: Remove packages
-  package: name='{{item}}' state=removed
+  package:
+    name: '{{item}}'
+    state: absent
   become: true
   with_items: "{{ bad_packages }}"
 
