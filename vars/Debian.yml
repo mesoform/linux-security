@@ -1,2 +1,26 @@
 ---
 system_uid_max: 1000
+good_packages:
+  - dnsutils
+  - ethtool
+  - iproute2
+  - lsof
+  - procps
+  - sysstat
+  - tcpdump
+  - auditd
+  - net-tools
+bad_packages:
+  - tftp
+  - tftp-server
+  - talk
+  - talkd
+  - yp-tools
+  - xinetd
+  - inetutils-inetd
+  - openbsd-inetd
+  - telnetd
+  - rsh-client
+  - rsh-server
+  - autofs
+  - firewalld

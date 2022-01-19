@@ -24,16 +24,15 @@
   tags:
     - always
 
-- include_tasks: redhat-packages.yml
-  when: ansible_os_family == 'RedHat'
+- include_tasks: packages.yml
 
-#- include_tasks: sysctl.yml
+- include_tasks: sysctl.yml
 
-#- include_tasks: services.yml
+- include_tasks: services.yml
 
-- include_tasks: minimise-access.yml
+#- include_tasks: minimise-access.yml
 
-#- include_tasks: auditd.yml
+- include_tasks: auditd.yml
 #  when: ansible_os_family == 'RedHat'
 
 - include_tasks: motd.yml

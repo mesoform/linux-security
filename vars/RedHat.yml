@@ -1,2 +1,27 @@
 ---
 system_uid_max: 1000
+good_packages:
+  - bind-utils
+  - ethtool
+  - iproute
+  - lsof
+  - procps
+  - sysstat
+  - tcpdump
+  - iptables-services
+  - audit
+  - net-tools
+bad_packages:
+  - tftp
+  - tftp-server
+  - talk
+  - talk-server
+  - ypbind
+  - ypserv
+  - xinetd
+  - inetd
+  - telnet-server
+  - rsh
+  - rsh-server
+  - autofs
+  - firewalld
