@@ -1,11 +1,4 @@
 ---
-
-- name: install audit daemon package for rhel system
-  become: true
-  yum:
-    name: audit
-    state: present
-
 - name: deploy auditd.conf
   become: true
   template:
