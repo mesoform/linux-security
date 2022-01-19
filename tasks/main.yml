@@ -27,7 +27,7 @@
 - include_tasks: redhat-packages.yml
   when: ansible_os_family == 'RedHat'
 
-- include_tasks: sysctl.yml
+#- include_tasks: sysctl.yml
 
 #- include_tasks: services.yml
 
