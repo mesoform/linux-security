@@ -1,6 +1,6 @@
 ---
 - name: "Drop malformed packets"
-  iptables_raw:
+  iptables:
     state: present
     name: drop_malformed_packets
     rules: |
@@ -11,7 +11,7 @@
     - step5
 
 - name: "Drop ICMP Timestamp packets"
-  iptables_raw:
+  iptables:
     state: present
     name: drop_icmp_timestamp
     rules: |
