@@ -5,9 +5,11 @@
     name: drop_malformed_packets_all_none
     chain: INPUT
     protocol: tcp
-    match: tcp
+    match:
+      - tcp
     tcp_flags: ALL NONE
-    action: DROP
+    action: append
+    policy: DROP
   tags:
     - fix
     - step5
@@ -18,9 +20,11 @@
     name: drop_malformed_packets_all_all
     chain: INPUT
     protocol: tcp
-    match: tcp
+    match:
+      - tcp
     tcp_flags: ALL ALL
-    action: DROP
+    action: append
+    policy: DROP
   tags:
     - fix
     - step5
@@ -32,7 +36,8 @@
     chain: INPUT
     protocol: icmp
     icmp_type: timestamp-request
-    action: DROP
+    action: append
+    policy: DROP
   tags:
     - fix
     - step5
@@ -44,7 +49,8 @@
     chain: INPUT
     protocol: icmp
     icmp_type: timestamp-reply
-    action: DROP
+    action: append
+    policy: DROP
   tags:
     - fix
     - step5
