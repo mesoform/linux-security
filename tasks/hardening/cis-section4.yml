@@ -161,6 +161,11 @@
       - fix
       - cis-section4
 
+- name: "CIS 4.1.4 Check /etc/localtime exists"
+  stat:
+    path: /boot/grub2
+  register: result_cis_4_1_4_stat
+
 - name: "CIS 4.1.4 Ensure events that modify date and time information are collected"
   blockinfile:
     dest: /etc/audit/rules.d/audit.rules
@@ -168,6 +173,7 @@
     block: |
       -w /etc/localtime -p wa -k audit_time_rules
   notify: reload auditd
+  when: result_cis_4_1_4_stat.stat.exists
   tags:
       - fix
       - cis-section4
@@ -183,8 +189,8 @@
       -w /etc/shadow -p wa -k identity
       -w /etc/security/opasswd -p wa -k identity
   tags:
-      - fix
-      - cis-section4
+    - fix
+    - cis-section4
 
 - name: "CIS 4.1.6 Ensure events that modify the system's network environment are collected"
   blockinfile:
@@ -195,11 +201,34 @@
       -w /etc/issue -p wa -k audit_rules_networkconfig_modification
       -w /etc/issue.net -p wa -k audit_rules_networkconfig_modification
       -w /etc/hosts -p wa -k audit_rules_networkconfig_modification
-      -w /etc/sysconfig/network -p wa -k audit_rules_networkconfig_modification
   notify: reload auditd
   tags:
-      - fix
-      - cis-section4
+    - fix
+    - cis-section4
+
+- name: "CIS 4.1.6 Ensure events that modify the system's network environment are collected (Fedora)"
+  blockinfile:
+    dest: /etc/audit/rules.d/audit.rules
+    marker: "# {mark} ANSIBLE MANAGED - network"
+    block: |
+      -w /etc/sysconfig/network -p wa -k audit_rules_networkconfig_modification
+  notify: reload auditd
+  when: ansible_os_family in ['RedHat']
+  tags:
+    - fix
+    - cis-section4
+
+- name: "CIS 4.1.6 Ensure events that modify the system's network environment are collected (Debian)"
+  blockinfile:
+    dest: /etc/audit/rules.d/audit.rules
+    marker: "# {mark} ANSIBLE MANAGED - network"
+    block: |
+      -w /etc/networks -p wa -k audit_rules_networkconfig_modification
+  notify: reload auditd
+  when: ansible_os_family in ['Debian']
+  tags:
+    - fix
+    - cis-section4
 
 - name: "CIS 4.1.7 Ensure events that modify the system's Mandatory Access Controls are collected"
   blockinfile:
@@ -217,10 +246,21 @@
     dest: /etc/audit/rules.d/audit.rules
     marker: "# {mark} ANSIBLE MANAGED - logins"
     block: |
-      -w /var/log/tallylog -p wa -k logins
-      -w /var/run/faillock/ -p wa -k logins
       -w /var/log/lastlog -p wa -k logins
   notify: reload auditd
+  tags:
+      - fix
+      - cis-section4
+
+- name: "CIS 4.1.8 Ensure login and logout events are collected (RedHat)"
+  blockinfile:
+    dest: /etc/audit/rules.d/audit.rules
+    marker: "# {mark} ANSIBLE MANAGED - logins"
+    block: |
+      -w /var/log/tallylog -p wa -k logins
+      -w /var/run/faillock/ -p wa -k logins
+  notify: reload auditd
+  when: ansible_os_family in ['RedHat']
   tags:
       - fix
       - cis-section4
@@ -234,6 +274,18 @@
       -w /var/log/btmp -p wa -k session
       -w /var/log/wtmp -p wa -k session
   notify: reload auditd
+  tags:
+      - fix
+      - cis-section4
+
+- name: "CIS 4.1.9 Ensure session initiation information is collected (RedHat)"
+  blockinfile:
+    dest: /etc/audit/rules.d/audit.rules
+    marker: "# {mark} ANSIBLE MANAGED - session"
+    block: |
+      -w /var/run/utmp -p wa -k session
+  notify: reload auditd
+  when: ansible_os_family in ['RedHat']
   tags:
       - fix
       - cis-section4
@@ -478,6 +530,7 @@
       -w /usr/sbin/modprobe -p x -k modules
       -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
   notify: reload auditd
+  when: ansible_os_family in ['RedHat']
   tags:
       - fix
       - cis-section4

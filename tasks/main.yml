@@ -32,9 +32,6 @@
 
 #- include_tasks: minimise-access.yml
 
-- include_tasks: auditd.yml
-#  when: ansible_os_family == 'RedHat'
-
 - include_tasks: motd.yml
 
 - name: common
