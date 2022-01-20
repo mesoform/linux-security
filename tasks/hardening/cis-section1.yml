@@ -124,6 +124,11 @@
     - ansible_distribution == 'RedHat'
     - result_cis_1_2_4.rc == 0
 
+- name: "CIS 1.4.1 Check bootloader config are configured"
+  stat:
+    path: /boot/grub2
+  register: result_cis_1_4_1_stat
+
 - name: "CIS 1.4.1 Ensure permissions on bootloader config are configured"
   file:
     state: touch
@@ -131,6 +136,9 @@
     owner: "root"
     group: "root"
     mode: "0600"
+  when:
+    - result_cis_1_4_1_stat.results.stat.exists
+    - result_cis_1_4_1_stat.results.stat.isreg
   tags:
     - level1
     - scored
@@ -144,6 +152,9 @@
     owner: root
     group: root
     mode: "0600"
+  when:
+    - result_cis_1_4_1_stat.results.stat.exists
+    - result_cis_1_4_1_stat.results.stat.isreg
   tags:
     - level1
     - scored
