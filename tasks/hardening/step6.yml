@@ -5,8 +5,7 @@
       path: "{{ item }}"
       owner: "{{ sec_log_owner }}"
       mode: "{{ sys_log_mode }}"
-    loop:
-      - "{{ sys_logs }}"
+    loop: "{{ sys_logs }}"
 
   - name: "System logs must be writeable only by root (tmpfiles.d)"
     lineinfile:
@@ -14,8 +13,7 @@
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f {{ item }}.*"
       line: "f {{ item }} {{ sys_log_mode }} {{ sec_log_owner }} -"
-    loop:
-      - "{{ sys_logs }}"
+    loop: "{{ sys_logs }}"
 
 - block:
   - name: "Security logs containing security events must only be readable by root"
@@ -24,16 +22,14 @@
       owner: "{{ sec_log_owner }}"
       group: "{{ sec_log_group }}"
       mode: "{{ sec_log_mode }}"
-    loop:
-      - "{{ sec_logs }}"
+    loop: "{{ sec_logs }}"
   - name: "Security logs containing security events must only be readable by root (tmpfiles.d)"
     lineinfile:
       create: yes
       dest: /lib/tmpfiles.d/var.conf
       regexp: "(?i)^#?f {{ item }}.*"
       line: "f {{ item }} {{ sec_log_mode }} {{ sec_log_owner }} {{ sec_log_group }} -"
-    loop:
-      - "{{ sec_logs }}"
+    loop: "{{ sec_logs }}"
   tags:
     - fix
     - step6
