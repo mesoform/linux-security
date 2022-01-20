@@ -102,7 +102,7 @@
 
 - name: "Root home directory must only be writable by root"
   file: path="{{ item }}" owner="root" mode=0700
-  loop: "{{ result_2_5_1_root.stdout }}"
+  loop: "{{ result_2_5_1_root.stdout_lines }}"
   tags:
     - patch
     - step2
