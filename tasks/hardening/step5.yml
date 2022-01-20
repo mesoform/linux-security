@@ -37,31 +37,31 @@
 #    - fix
 #    - step5
 
-- name: "Drop ICMP Timestamp packets request"
-  iptables:
-    state: present
-    comment: drop_icmp_timestamp_request
-    chain: INPUT
-    protocol: icmp
-    icmp_type: timestamp-request
-    action: append
-    policy: DROP
-  tags:
-    - fix
-    - step5
-
-- name: "Drop ICMP Timestamp reply packets"
-  iptables:
-    state: present
-    comment: drop_icmp_timestamp_reply
-    chain: INPUT
-    protocol: icmp
-    icmp_type: timestamp-reply
-    action: append
-    policy: DROP
-  tags:
-    - fix
-    - step5
+#- name: "Drop ICMP Timestamp packets request"
+#  iptables:
+#    state: present
+#    comment: drop_icmp_timestamp_request
+#    chain: INPUT
+#    protocol: icmp
+#    icmp_type: timestamp-request
+#    action: append
+#    policy: DROP
+#  tags:
+#    - fix
+#    - step5
+#
+#- name: "Drop ICMP Timestamp reply packets"
+#  iptables:
+#    state: present
+#    comment: drop_icmp_timestamp_reply
+#    chain: INPUT
+#    protocol: icmp
+#    icmp_type: timestamp-reply
+#    action: append
+#    policy: DROP
+#  tags:
+#    - fix
+#    - step5
 
 - name: "Ensure suspicious packets are logged"
   sysctl:
