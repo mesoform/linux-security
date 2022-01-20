@@ -19,6 +19,7 @@
 - block:
   - name: "Security logs containing security events must only be readable by root"
     file:
+      state: touch
       path: "{{ item }}"
       owner: "{{ sec_log_owner }}"
       group: "{{ sec_log_group }}"
