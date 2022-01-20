@@ -1,4 +1,11 @@
 ---
+- name: Allow related and established connections
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+  become: yes
+
 - name: "Drop incoming malformed NULL packets"
   iptables:
     state: present
@@ -10,8 +17,7 @@
         - ALL
       flags_set:
         - NONE
-    action: append
-    policy: DROP
+    jump: DROP
   tags:
     - fix
     - step5
@@ -29,8 +35,7 @@
 #        - ALL
 #      flags_set:
 #        - ALL
-#    action: append
-#    policy: DROP
+#    jump: DROP
 #  tags:
 #    - fix
 #    - step5
@@ -42,8 +47,7 @@
 #    chain: INPUT
 #    protocol: icmp
 #    icmp_type: timestamp-request
-#    action: append
-#    policy: DROP
+#    jump: DROP
 #  tags:
 #    - fix
 #    - step5
@@ -55,8 +59,7 @@
 #    chain: INPUT
 #    protocol: icmp
 #    icmp_type: timestamp-reply
-#    action: append
-#    policy: DROP
+#    jump: DROP
 #  tags:
 #    - fix
 #    - step5
