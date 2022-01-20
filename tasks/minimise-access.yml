@@ -2,6 +2,6 @@
 - name: Minimise access to important direcories and files
   become: true
   file: path='{{item}}' mode='go-w' recurse=yes
-  with_items:
+  loop:
     - '/usr'
     - '/usr/sbin'

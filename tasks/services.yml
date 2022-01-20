@@ -7,7 +7,7 @@
   become: true
   register: cmd_result
   failed_when: "cmd_result|failed and 'no service' not in cmd_result.msg"
-  with_items: '{{ bad_daemons }}'
+  loop: '{{ bad_daemons }}'
   when: ansible_os_family in ['RedHat'] and ansible_distribution_major_version == "6"
 
 - name: disable daemons on rhel7
@@ -19,7 +19,7 @@
   register: cmd_result
   failed_when:
     - "cmd_result|failed and 'Could not find the requested service' not in cmd_result.msg"
-  with_items: '{{ bad_daemons }}'
+  loop: '{{ bad_daemons }}'
   when: ansible_os_family in ['RedHat'] and ansible_distribution_major_version == "7"
 
 - name: enable daemons on rhel7
@@ -30,5 +30,5 @@
   become: true
   register: cmd_result
   failed_when: "cmd_result|failed and 'Could not find the requested service' not in cmd_result.msg"
-  with_items: '{{ good_daemons }}'
+  loop: '{{ good_daemons }}'
   when: ansible_os_family in ['RedHat'] and ansible_distribution_major_version == "7"

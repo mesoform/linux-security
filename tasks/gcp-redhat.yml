@@ -68,7 +68,7 @@
       dest: /etc/ntp.conf
       state: present
       line: "server {{ item }} iburst"
-    with_items:
+    loop:
       - "{{ ntp_servers }}"
   - name: update NTP servers (stop DHCP overwriting ntp.conf)
     file:
@@ -99,7 +99,7 @@
       state: present
       regexp: '^\s*nameserver\s+{{ item }}.*$'
       line: "nameserver {{ item }}"
-    with_items:
+    loop:
       - "{{ dns_servers }}"
   - name: update DNS resolvers (add custom domain)
     lineinfile:
@@ -157,7 +157,7 @@
     file:
       path: "{{ item.path }}"
       state: absent
-    with_items:
+    loop:
       - "{{ stackdriver_config.files }}"
     notify: reload fluentd
     when: stackdriver_config is defined

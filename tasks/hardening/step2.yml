@@ -12,7 +12,7 @@
 
 - name: "Remove martian root accounts"
   user: name={{ item }} state=absent force=yes
-  with_items: "{{ result_2_1_1.stdout_lines }}"
+  loop: "{{ result_2_1_1.stdout_lines }}"
   when: result_2_1_1.stdout_lines
   tags:
     - patch
@@ -40,7 +40,7 @@
 
 - name: "Only 'root' and other approved accounts are allowed to be members of the group with gid 0 | Primary group perform"
   user: name={{ item }} group=nobody
-  with_items: "{{ result_2_2_1_primary.stdout_lines }}"
+  loop: "{{ result_2_2_1_primary.stdout_lines }}"
   when: item not in allowed_gid_zero_users_list
   tags:
     - patch
@@ -64,7 +64,7 @@
 
 - name: "Disable SU access"
   command: "/usr/sbin/lgroupmod -m {{ item }} wheel"
-  with_items: "{{ result_2_4_1_wheel.stdout_lines }}"
+  loop: "{{ result_2_4_1_wheel.stdout_lines }}"
   when: result_2_4_1_wheel.stdout_lines
   tags:
     - patch
@@ -102,7 +102,7 @@
 
 - name: "Root home directory must only be writable by root"
   file: path="{{ item }}" owner="root" mode=0700
-  with_items: "{{ result_2_5_1_root.stdout }}"
+  loop: "{{ result_2_5_1_root.stdout }}"
   tags:
     - patch
     - step2
@@ -121,7 +121,7 @@
 
 - name: "Ensure no other user has the same home directory as root"
   user: name={{ item }} home=/home/{{ item }} createhome=yes
-  with_items: "{{ result_2_5_3_users_with_root_homedir.stdout_lines }}"
+  loop: "{{ result_2_5_3_users_with_root_homedir.stdout_lines }}"
   tags:
     - patch
     - step2

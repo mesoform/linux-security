@@ -35,7 +35,7 @@
 
   - stat: path="{{ item }}"
     register: result_cis_4_2_4_stat
-    with_items: "{{ result_cis_4_2_4.stdout_lines }}"
+    loop: "{{ result_cis_4_2_4.stdout_lines }}"
     tags:
       - level
       - patch
@@ -46,7 +46,7 @@
     when:
       - item.stat.exists
       - item.stat.isreg
-    with_items: "{{ result_cis_4_2_4_stat.results }}"
+    loop: "{{ result_cis_4_2_4_stat.results }}"
 
   - lineinfile:
       create: yes
@@ -423,7 +423,7 @@
       group: root
       mode: "0600"
   notify: reload auditd
-  with_items: "{{ common_suid_guid_programs.stdout_lines }}"
+  loop: "{{ common_suid_guid_programs.stdout_lines }}"
   tags:
       - fix
       - cis-section4

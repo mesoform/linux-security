@@ -20,7 +20,7 @@
       state: present
       reload: yes
       ignoreerrors: yes
-  with_items:
+  loop:
       - { name: net.ipv4.icmp_ignore_bogus_error_responses, value: 1 }
   tags:
       - fix
@@ -34,7 +34,7 @@
       state: present
       reload: yes
       ignoreerrors: yes
-  with_items:
+  loop:
       - { name: net.ipv6.conf.all.accept_ra, value: 0 }
       - { name: net.ipv6.conf.default.accept_ra, value: 0 }
   tags:
@@ -49,7 +49,7 @@
       state: present
       reload: yes
       ignoreerrors: yes
-  with_items:
+  loop:
       - { name: net.ipv6.conf.all.accept_redirects, value: 0 }
       - { name: net.ipv6.conf.default.accept_redirects, value: 0 }
   tags:

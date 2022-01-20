@@ -1,7 +1,7 @@
 ---
 - name: "set root ownership and permissions (/etc/passwd)"
   file: path="{{ item }}" owner="root" group="root" mode=0644
-  with_items:
+  loop:
     - "/etc/passwd"
   tags:
     - patch
@@ -9,7 +9,7 @@
 
 - name: "set root ownership and permissions (/etc/shadow)"
   file: path="{{ item }}" owner="root" group="root" mode=0000
-  with_items:
+  loop:
     - "/etc/shadow"
   tags:
     - patch
@@ -52,7 +52,7 @@
     tags:
       - patch
       - step4
-    with_items:
+    loop:
       - /etc/profile
       - /etc/bashrc
 
@@ -84,7 +84,7 @@
 
 - name: "Shadow password files must be readable and writeable by 'root' only"
   file: path="{{ item }}" owner="root" group="root" mode=0755
-  with_items:
+  loop:
     - /etc/udev
     - /dev
   tags:
@@ -95,7 +95,7 @@
   file:
     name: "{{ item }}"
     state: absent
-  with_items:
+  loop:
     - /etc/cron.deny
     - /etc/cron.allow
     - /etc/at.allow

@@ -3,12 +3,12 @@
   package:
     name: '{{item}}'
   become: true
-  with_items: "{{ good_packages }}"
+  loop: "{{ good_packages }}"
 
 - name: Remove packages
   package:
     name: '{{item}}'
     state: absent
   become: true
-  with_items: "{{ bad_packages }}"
+  loop: "{{ bad_packages }}"
 

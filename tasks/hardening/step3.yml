@@ -6,7 +6,7 @@
     owner: root
     group: root
     mode: 0755
-  with_items:
+  loop:
     - /bin/bash
   tags:
     - audit
@@ -19,7 +19,7 @@
     group: root
     mode: u=rwX,g=rX,o=rX 
     recurse: yes
-  with_items:
+  loop:
     - /etc/profile.d
     - /etc/skel
   tags:
@@ -31,7 +31,7 @@
     path: "{{ item }}"
     owner: root
     mode: "o-w"
-  with_items: "{{ common_suid_guid_programs.stdout_lines }}"
+  loop: "{{ common_suid_guid_programs.stdout_lines }}"
   tags:
     - fix
     - step2

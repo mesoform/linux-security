@@ -1,7 +1,7 @@
 ---
 - name: Install packages (Debian)
   apt: pkg='{{item}}'
-  with_items:
+  loop:
     - ksh
     - dnsutils
     - ethtool
