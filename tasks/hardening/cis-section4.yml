@@ -119,6 +119,7 @@
     line: '\1="\2 audit=1"'
     backrefs: yes
   notify: Run grub2-mkconfig
+  when: result_cis_1_4_1_stat.stat.exists
   tags:
     - level
     - patch
