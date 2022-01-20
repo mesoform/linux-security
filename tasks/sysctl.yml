@@ -3,7 +3,12 @@
   include_vars: sysctl.yml
 
 - name: Protect sysctl.conf
-  file: path='/etc/sysctl.conf' owner=root group=root mode=0440
+  file:
+    state: touch
+    path: '/etc/sysctl.conf'
+    owner: root
+    group: root
+    mode: 0440
   become: true
 
 - name: Set the default mask for all process

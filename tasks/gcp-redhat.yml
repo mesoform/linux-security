@@ -147,6 +147,7 @@
     register: stackdriver_config
   - name: Configure Stackdriver Logging (create google-fluent directory)
     file:
+      state: touch
       path: /etc/google-fluentd/config.d
       state: directory
       mode: u=rwx,g=rx

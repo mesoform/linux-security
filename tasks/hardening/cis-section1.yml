@@ -126,6 +126,7 @@
 
 - name: "CIS 1.4.1 Ensure permissions on bootloader config are configured"
   file:
+    state: touch
     dest: "/boot/grub2/grub.cfg"
     owner: "root"
     group: "root"

@@ -101,7 +101,11 @@
     - step2
 
 - name: "Root home directory must only be writable by root"
-  file: path="{{ item }}" owner="root" mode=0700
+  file:
+    state: touch
+    path: "{{ item }}"
+    owner: "root"
+    mode: 0700
   loop: "{{ result_2_5_1_root.stdout_lines }}"
   tags:
     - patch
@@ -127,7 +131,11 @@
     - step2
 
 - name: "The root search paths must be writable by root"
-  file: path="{{ item }}" owner="root" mode=go-w
+  file:
+    state: touch
+    path: "{{ item }}"
+    owner: "root"
+    mode: go-w
   with_flattened:
     - "{{ search_path_for_root }}"
     - "{{ common_execution_search_path.stdout_lines }}"

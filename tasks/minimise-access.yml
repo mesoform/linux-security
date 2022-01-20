@@ -1,7 +1,11 @@
 ---
 - name: Minimise access to important direcories and files
   become: true
-  file: path='{{item}}' mode='go-w' recurse=yes
+  file:
+    state: touch
+    path: '{{item}}'
+    mode: 'go-w'
+    recurse: yes
   loop:
     - '/usr'
     - '/usr/sbin'

@@ -2,6 +2,7 @@
 
 - name: "User shells MUST NOT have the privileged escalation bit (setuid / setgid) set"
   file:
+    state: touch
     path: "{{ item }}"
     owner: root
     group: root
@@ -14,6 +15,7 @@
 
 - name: "Configuration files used to set user-specific shell settings must be writable by root"
   file:
+    state: touch
     path: "{{ item }}"
     owner: root
     group: root
@@ -28,6 +30,7 @@
 
 - name: "'setuid' or 'setgid' executables MUST only be modifiable by the file owner or 'root'"
   file:
+    state: touch
     path: "{{ item }}"
     owner: root
     mode: "o-w"

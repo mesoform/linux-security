@@ -1,6 +1,11 @@
 ---
 - name: "set root ownership and permissions (/etc/passwd)"
-  file: path="{{ item }}" owner="root" group="root" mode=0644
+  file:
+    state: touch
+    path: "{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: 0644
   loop:
     - "/etc/passwd"
   tags:
@@ -8,7 +13,12 @@
     - step4
 
 - name: "set root ownership and permissions (/etc/shadow)"
-  file: path="{{ item }}" owner="root" group="root" mode=0000
+  file:
+    state: touch
+    path: "{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: 0000
   loop:
     - "/etc/shadow"
   tags:
@@ -68,7 +78,12 @@
 # for destination file
 - block:
   - name: "Core dump directory MUST be secured by root"
-    file: path="/var/lib/systemd/coredump" owner="root" group="root" mode=0700
+    file:
+      state: touch
+      path: "/var/lib/systemd/coredump"
+      owner: "root"
+      group: "root"
+      mode: 0700
     tags:
       - patch
       - step4
@@ -83,7 +98,12 @@
       - step4
 
 - name: "Shadow password files must be readable and writeable by 'root' only"
-  file: path="{{ item }}" owner="root" group="root" mode=0755
+  file:
+    state: touch
+    path: "{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: 0755
   loop:
     - /etc/udev
     - /dev

@@ -2,6 +2,7 @@
 - block:
   - name: "System logs must be writeable only by root"
     file:
+      state: touch
       path: "{{ item }}"
       owner: "{{ sec_log_owner }}"
       mode: "{{ sys_log_mode }}"
