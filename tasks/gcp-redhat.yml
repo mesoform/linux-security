@@ -50,7 +50,7 @@
 
 
 - name: "install Google Cloud SDK"
-  yum:
+  package:
     name: google-cloud-sdk
   tags:
     - gcp

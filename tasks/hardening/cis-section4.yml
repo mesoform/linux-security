@@ -2,7 +2,7 @@
 # 4 Logging and Auditing
 
 - name: "CIS 4.2.3 Ensure rsyslog or syslog-ng is installed"
-  yum:
+  package:
     name: rsyslog
     state: present
   tags:
