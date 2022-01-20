@@ -1,41 +1,41 @@
 ---
-- name: "Drop malformed packets"
-  iptables:
-    state: present
-    comment: drop_malformed_packets_all_none
-    chain: INPUT
-    protocol: tcp
-    match:
-      - tcp
-    tcp_flags:
-      flags:
-        - ALL
-      flags_set:
-        - NONE
-    action: append
-    policy: DROP
-  tags:
-    - fix
-    - step5
-
-- name: "Drop malformed packets"
-  iptables:
-    state: present
-    comment: drop_malformed_packets_all_all
-    chain: INPUT
-    protocol: tcp
-    match:
-      - tcp
-    tcp_flags:
-      flags:
-        - ALL
-      flags_set:
-        - ALL
-    action: append
-    policy: DROP
-  tags:
-    - fix
-    - step5
+#- name: "Drop malformed packets"
+#  iptables:
+#    state: present
+#    comment: drop_malformed_packets_all_none
+#    chain: INPUT
+#    protocol: tcp
+#    match:
+#      - tcp
+#    tcp_flags:
+#      flags:
+#        - ALL
+#      flags_set:
+#        - NONE
+#    action: append
+#    policy: DROP
+#  tags:
+#    - fix
+#    - step5
+#
+#- name: "Drop malformed packets"
+#  iptables:
+#    state: present
+#    comment: drop_malformed_packets_all_all
+#    chain: INPUT
+#    protocol: tcp
+#    match:
+#      - tcp
+#    tcp_flags:
+#      flags:
+#        - ALL
+#      flags_set:
+#        - ALL
+#    action: append
+#    policy: DROP
+#  tags:
+#    - fix
+#    - step5
 
 - name: "Drop ICMP Timestamp packets request"
   iptables:
