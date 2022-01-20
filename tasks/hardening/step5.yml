@@ -22,47 +22,47 @@
     - fix
     - step5
 
-#- name: "Drop malformed packets"
-#  iptables:
-#    state: present
-#    comment: drop_malformed_packets_all_all
-#    chain: INPUT
-#    protocol: tcp
-#    match:
-#      - tcp
-#    tcp_flags:
-#      flags:
-#        - ALL
-#      flags_set:
-#        - ALL
-#    jump: DROP
-#  tags:
-#    - fix
-#    - step5
+- name: "Drop malformed packets"
+  iptables:
+    state: present
+    comment: drop_malformed_packets_all_all
+    chain: INPUT
+    protocol: tcp
+    match:
+      - tcp
+    tcp_flags:
+      flags:
+        - ALL
+      flags_set:
+        - ALL
+    jump: DROP
+  tags:
+    - fix
+    - step5
 
-#- name: "Drop ICMP Timestamp packets request"
-#  iptables:
-#    state: present
-#    comment: drop_icmp_timestamp_request
-#    chain: INPUT
-#    protocol: icmp
-#    icmp_type: timestamp-request
-#    jump: DROP
-#  tags:
-#    - fix
-#    - step5
-#
-#- name: "Drop ICMP Timestamp reply packets"
-#  iptables:
-#    state: present
-#    comment: drop_icmp_timestamp_reply
-#    chain: INPUT
-#    protocol: icmp
-#    icmp_type: timestamp-reply
-#    jump: DROP
-#  tags:
-#    - fix
-#    - step5
+- name: "Drop ICMP Timestamp packets request"
+  iptables:
+    state: present
+    comment: drop_icmp_timestamp_request
+    chain: INPUT
+    protocol: icmp
+    icmp_type: timestamp-request
+    jump: DROP
+  tags:
+    - fix
+    - step5
+
+- name: "Drop ICMP Timestamp reply packets"
+  iptables:
+    state: present
+    comment: drop_icmp_timestamp_reply
+    chain: INPUT
+    protocol: icmp
+    icmp_type: timestamp-reply
+    jump: DROP
+  tags:
+    - fix
+    - step5
 
 - name: "Ensure suspicious packets are logged"
   sysctl:
