@@ -2,7 +2,7 @@
 - name: Minimise access to important direcories and files
   become: true
   file:
-    state: touch
+    state: directory
     path: '{{item}}'
     mode: 'go-w'
     recurse: yes

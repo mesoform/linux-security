@@ -15,7 +15,7 @@
 
 - name: "Configuration files used to set user-specific shell settings must be writable by root"
   file:
-    state: touch
+    state: directory
     path: "{{ item }}"
     owner: root
     group: root
