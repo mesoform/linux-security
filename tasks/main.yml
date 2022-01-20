@@ -30,6 +30,7 @@
 
 - include_tasks: services.yml
 
+## Needs the automation user to continue to have access to make changes afterwards.
 #- include_tasks: minimise-access.yml
 
 - include_tasks: motd.yml

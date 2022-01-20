@@ -1,23 +1,21 @@
 ---
-#- name: "Drop malformed packets"
-#  iptables:
-#    state: present
-#    comment: drop_malformed_packets_all_none
-#    chain: INPUT
-#    protocol: tcp
-#    match:
-#      - tcp
-#    tcp_flags:
-#      flags:
-#        - ALL
-#      flags_set:
-#        - NONE
-#    action: append
-#    policy: DROP
-#  tags:
-#    - fix
-#    - step5
-#
+- name: "Drop incoming malformed NULL packets"
+  iptables:
+    state: present
+    comment: drop_null_packets
+    chain: INPUT
+    protocol: tcp
+    tcp_flags:
+      flags:
+        - ALL
+      flags_set:
+        - NONE
+    action: append
+    policy: DROP
+  tags:
+    - fix
+    - step5
+
 #- name: "Drop malformed packets"
 #  iptables:
 #    state: present
